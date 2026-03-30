@@ -91,6 +91,8 @@ function PostView({ post, onBack }) {
                 <img
                   src={post.images[i + 1]}
                   alt=""
+                  loading="lazy"
+                  decoding="async"
                   style={{
                     width: "100%", height: "100%", objectFit: "cover",
                     display: "block", transition: "transform 0.5s ease",
@@ -128,6 +130,8 @@ function PostView({ post, onBack }) {
                 >
                   <img
                     src={img} alt=""
+                    loading="lazy"
+                    decoding="async"
                     style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", transition: "transform 0.5s ease" }}
                     onMouseEnter={e => e.target.style.transform = "scale(1.05)"}
                     onMouseLeave={e => e.target.style.transform = "scale(1)"}
