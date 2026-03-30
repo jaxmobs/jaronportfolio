@@ -9,6 +9,7 @@ import LifeMottoSection from "./components/LifeMottoSection.jsx";
 import BlogPage from "./components/BlogPage.jsx";
 import LatestPost from "./components/LatestPost.jsx";
 import { POSTS } from "./blog.js";
+import GALLERY_COLORS from "./gallery-colors.json";
 
 // ─── Global styles injected once ───────────────────────────────────────────
 const GlobalStyles = () => (
@@ -480,7 +481,11 @@ export default function App() {
           date: post.date,
         }))),
         ...GALLERY,
-      ]} />
+      ].sort((a, b) => {
+        const ca = GALLERY_COLORS[a.src] ?? { h: 0, s: 0, l: 0.5 };
+        const cb = GALLERY_COLORS[b.src] ?? { h: 0, s: 0, l: 0.5 };
+        return ca.h - cb.h;
+      })} />
       <LatestPost onReadPost={(id) => openBlog(id)} />
       <PucknoteSection />
       <AboutSection />

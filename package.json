@@ -8,7 +8,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "optimize-gallery": "node scripts/optimize-gallery.js",
-    "optimize-blog": "node scripts/optimize-blog.js"
+    "optimize-blog": "node scripts/optimize-blog.js",
+    "sort-gallery": "node scripts/sort-gallery-colors.js"
   },
   "dependencies": {
     "react": "^18.2.0",
