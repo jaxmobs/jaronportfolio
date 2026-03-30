@@ -24,7 +24,7 @@ async function optimize() {
     const baseName = file.replace(/\.[^.]+$/, "");
     const outFile = baseName + ".jpg";
     const outPath = join(BLOG_DIR, outFile);
-    const writePath = path === outPath ? path + ".opt" : outPath;
+    const tmpPath = path + ".opt";
 
     const before = (await stat(path)).size;
     totalBefore += before;
@@ -32,17 +32,13 @@ async function optimize() {
     await sharp(path)
       .resize(MAX_WIDTH, MAX_WIDTH, { fit: "inside", withoutEnlargement: true })
       .jpeg({ quality: JPEG_QUALITY, mozjpeg: true })
-      .toFile(writePath);
+      .toFile(tmpPath);
 
-    const after = (await stat(writePath)).size;
+    const after = (await stat(tmpPath)).size;
     totalAfter += after;
 
-    if (path === outPath) {
-      await unlink(path);
-      await rename(writePath, outPath);
-    } else {
-      await unlink(path);
-    }
+    await unlink(path);
+    await rename(tmpPath, outPath);
 
     const saved = ((1 - after / before) * 100).toFixed(1);
     console.log(`  ${file}: ${(before / 1024 / 1024).toFixed(1)}MB → ${(after / 1024).toFixed(0)}KB (${saved}% smaller)`);

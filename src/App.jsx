@@ -8,6 +8,7 @@ import SkillBar from "./components/SkillBar.jsx";
 import LifeMottoSection from "./components/LifeMottoSection.jsx";
 import BlogPage from "./components/BlogPage.jsx";
 import LatestPost from "./components/LatestPost.jsx";
+import { POSTS } from "./blog.js";
 
 // ─── Global styles injected once ───────────────────────────────────────────
 const GlobalStyles = () => (
@@ -470,7 +471,16 @@ export default function App() {
       <Hero scrollY={scrollY} />
       <StatsBar />
       <WorkSection />
-      <GallerySection items={GALLERY} />
+      <GallerySection items={[
+        ...POSTS.flatMap(post => post.images.map((src, i) => ({
+          id: `blog-${post.id}-${i}`,
+          src,
+          alt: post.title,
+          caption: post.title,
+          date: post.date,
+        }))),
+        ...GALLERY,
+      ]} />
       <LatestPost onReadPost={(id) => openBlog(id)} />
       <PucknoteSection />
       <AboutSection />
