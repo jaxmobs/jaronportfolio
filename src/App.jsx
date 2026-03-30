@@ -396,8 +396,8 @@ function QuoteSection() {
 function ContactSection() {
   // ─ Update your email and Instagram handle here ─
   const EMAIL = "jaronmobley@gmail.com";
-  const INSTAGRAM = "@jaronmobley";
-  const INSTAGRAM_URL = "https://instagram.com/jaronmobley";
+  const INSTAGRAM = "@jaronmobley.mp4";
+  const INSTAGRAM_URL = "https://instagram.com/jaronmobley.mp4";
 
   const linkStyle = {
     display: "flex", alignItems: "center", justifyContent: "space-between",
@@ -501,7 +501,6 @@ export default function App() {
       <LatestPost onReadPost={(id) => openBlog(id)} />
       <PucknoteSection />
       <AboutSection />
-      <LifeMottoSection />
       <QuoteSection />
       <ContactSection />
       <footer style={{ padding: "24px", borderTop: "1px solid rgba(196,163,90,0.08)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
