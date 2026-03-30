@@ -382,7 +382,7 @@ function QuoteSection() {
 // ─── Contact section ──────────────────────────────────────────────────────────
 function ContactSection() {
   // ─ Update your email and Instagram handle here ─
-  const EMAIL = "hello@jaronmobley.com";
+  const EMAIL = "jaronmobley@gmail.com";
   const INSTAGRAM = "@jaronmobley";
   const INSTAGRAM_URL = "https://instagram.com/jaronmobley";
 
