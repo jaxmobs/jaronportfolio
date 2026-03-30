@@ -185,9 +185,7 @@ function StatsBar() {
           <div style={{ fontSize: "9px", letterSpacing: "3px", textTransform: "uppercase", color: "#C4A35A", fontFamily: "'DM Mono', monospace", marginBottom: "6px" }}>
             The Secret Life of Walter Mitty
           </div>
-          <div style={{ fontSize: "9px", letterSpacing: "3px", textTransform: "uppercase", color: "#4A5A60", fontFamily: "'DM Mono', monospace" }}>
-            Palmer, Alaska Based
-          </div>
+
         </div>
       </FadeIn>
     </section>
