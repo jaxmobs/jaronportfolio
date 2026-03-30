@@ -167,15 +167,27 @@ function Hero({ scrollY }) {
 // ─── Stats bar ───────────────────────────────────────────────────────────────
 function StatsBar() {
   return (
-    <section style={{ borderTop: "1px solid rgba(196,163,90,0.12)", borderBottom: "1px solid rgba(196,163,90,0.12)", padding: "32px 24px" }}>
+    <section style={{ borderTop: "1px solid rgba(196,163,90,0.12)", borderBottom: "1px solid rgba(196,163,90,0.12)", padding: "40px 24px" }}>
       <FadeIn>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "24px", maxWidth: "500px", margin: "0 auto" }}>
-          {[["4+", "Years"], ["60+", "Projects"], ["AK", "Based"]].map(([val, lbl]) => (
-            <div key={lbl} style={{ textAlign: "center" }}>
-              <div style={{ fontFamily: "'Playfair Display', serif", fontSize: "32px", fontWeight: 700, color: "#C4A35A" }}>{val}</div>
-              <div style={{ fontSize: "9px", letterSpacing: "3px", color: "#7A8A8E", textTransform: "uppercase", fontFamily: "'DM Mono', monospace" }}>{lbl}</div>
-            </div>
-          ))}
+        <div style={{ maxWidth: "560px" }}>
+          <div style={{ width: "32px", height: "2px", background: "#C4A35A", marginBottom: "20px" }} />
+          <p style={{
+            fontFamily: "'Playfair Display', serif",
+            fontSize: "clamp(16px, 4vw, 22px)",
+            fontStyle: "italic",
+            fontWeight: 700,
+            color: "#EDE8DF",
+            lineHeight: 1.45,
+            marginBottom: "16px",
+          }}>
+            "To see the world, things dangerous to come to, to see behind walls, draw closer, to find each other and to feel. That is the purpose of life."
+          </p>
+          <div style={{ fontSize: "9px", letterSpacing: "3px", textTransform: "uppercase", color: "#C4A35A", fontFamily: "'DM Mono', monospace", marginBottom: "6px" }}>
+            The Secret Life of Walter Mitty
+          </div>
+          <div style={{ fontSize: "9px", letterSpacing: "3px", textTransform: "uppercase", color: "#4A5A60", fontFamily: "'DM Mono', monospace" }}>
+            Palmer, Alaska Based
+          </div>
         </div>
       </FadeIn>
     </section>
