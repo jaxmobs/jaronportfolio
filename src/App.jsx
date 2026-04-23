@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { PROJECTS, SKILLS, FILTERS, GALLERY } from "./data.js";
 import { useScrollY } from "./hooks.js";
 import FadeIn from "./components/FadeIn.jsx";
@@ -71,7 +71,13 @@ function Nav({ scrollY, onNav, onFieldNotes }) {
 // ─── Hero ────────────────────────────────────────────────────────────────────
 function Hero({ scrollY }) {
   const [loaded, setLoaded] = useState(false);
+  const videoRef = useRef(null);
   useEffect(() => { const t = setTimeout(() => setLoaded(true), 100); return () => clearTimeout(t); }, []);
+  useEffect(() => {
+    const vid = videoRef.current;
+    if (!vid) return;
+    vid.play().catch(() => {});
+  }, []);
 
   const show = (delay) => ({
     opacity: loaded ? 1 : 0,
@@ -99,6 +105,7 @@ function Hero({ scrollY }) {
           transition: "transform 0.1s ease-out",
         }}>
           <video
+            ref={videoRef}
             src="/hero-video.mp4"
             autoPlay
             muted
