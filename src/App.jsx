@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { PROJECTS, SKILLS, FILTERS, GALLERY } from "./data.js";
-import { useScrollY } from "./hooks.js";
+import { useScrollY, useIsMobile } from "./hooks.js";
 import FadeIn from "./components/FadeIn.jsx";
 import ProjectCard from "./components/ProjectCard.jsx";
 import GallerySection from "./components/GallerySection.jsx";
@@ -23,47 +23,112 @@ const GlobalStyles = () => (
     ::-webkit-scrollbar-thumb { background: #C4A35A; border-radius: 2px; }
     a { color: inherit; text-decoration: none; }
     @keyframes scrollPulse { 0%,100%{opacity:0.4} 50%{opacity:1} }
+    .hero-image { display: none; position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; }
+    @media (max-width: 768px) {
+      .hero-video-wrap { display: none; }
+      .hero-image { display: block; }
+      .hero-coords { display: none; }
+    }
   `}</style>
 );
 
 // ─── Nav ────────────────────────────────────────────────────────────────────
 function Nav({ scrollY, onNav, onFieldNotes }) {
   const solid = scrollY > 60;
+  const isMobile = useIsMobile();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const close = () => setMenuOpen(false);
+
   return (
     <nav style={{
       position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
       padding: "20px 24px",
       display: "flex", justifyContent: "space-between", alignItems: "center",
-      background: solid ? "rgba(10,14,18,0.97)" : "transparent",
-      borderBottom: solid ? "1px solid rgba(196,163,90,0.12)" : "none",
+      background: solid || menuOpen ? "rgba(10,14,18,0.97)" : "transparent",
+      borderBottom: solid || menuOpen ? "1px solid rgba(196,163,90,0.12)" : "none",
       transition: "background 0.4s ease, border-color 0.4s ease",
     }}>
       <div style={{ fontFamily: "'Playfair Display', serif", fontSize: "18px", fontWeight: 700, letterSpacing: "1px", color: "#EDE8DF" }}>
         Jaron <span style={{ color: "#C4A35A" }}>Mobley</span>
       </div>
-      <div style={{ display: "flex", gap: "32px" }}>
-        {["Work", "Gallery", "About", "Contact"].map(item => (
-          <a key={item} href={`#${item.toLowerCase()}`} onClick={() => onNav && onNav(null)} style={{
+
+      {isMobile ? (
+        <>
+          <button
+            onClick={() => setMenuOpen(o => !o)}
+            aria-label="Toggle menu"
+            style={{ background: "none", border: "none", cursor: "pointer", padding: "4px", display: "flex", flexDirection: "column", gap: "5px" }}
+          >
+            {[0, 1, 2].map(i => (
+              <div key={i} style={{
+                width: "22px", height: "2px", background: "#C4A35A",
+                transition: "transform 0.3s ease, opacity 0.3s ease",
+                transform: menuOpen
+                  ? i === 0 ? "rotate(45deg) translateY(7px)"
+                  : i === 2 ? "rotate(-45deg) translateY(-7px)"
+                  : "scaleX(0)"
+                  : "none",
+                opacity: menuOpen && i === 1 ? 0 : 1,
+              }} />
+            ))}
+          </button>
+
+          {menuOpen && (
+            <div style={{
+              position: "absolute", top: "100%", left: 0, right: 0,
+              background: "rgba(10,14,18,0.98)",
+              borderBottom: "1px solid rgba(196,163,90,0.12)",
+              padding: "8px 0 16px",
+            }}>
+              {["Work", "Gallery", "About", "Contact"].map(item => (
+                <a key={item} href={`#${item.toLowerCase()}`}
+                  onClick={() => { onNav && onNav(null); close(); }}
+                  style={{
+                    display: "block", padding: "14px 24px",
+                    fontSize: "11px", letterSpacing: "3px", textTransform: "uppercase",
+                    color: "#7A8A8E", fontFamily: "'DM Mono', monospace",
+                    borderBottom: "1px solid rgba(196,163,90,0.06)",
+                  }}
+                >
+                  {item}
+                </a>
+              ))}
+              <button onClick={() => { onFieldNotes(); close(); }} style={{
+                display: "block", width: "100%", textAlign: "left",
+                padding: "14px 24px", background: "none", border: "none", cursor: "pointer",
+                fontSize: "11px", letterSpacing: "3px", textTransform: "uppercase",
+                color: "#7A8A8E", fontFamily: "'DM Mono', monospace",
+              }}>
+                Field Notes
+              </button>
+            </div>
+          )}
+        </>
+      ) : (
+        <div style={{ display: "flex", gap: "32px" }}>
+          {["Work", "Gallery", "About", "Contact"].map(item => (
+            <a key={item} href={`#${item.toLowerCase()}`} onClick={() => onNav && onNav(null)} style={{
+              fontSize: "11px", letterSpacing: "2.5px", textTransform: "uppercase",
+              color: "#7A8A8E", fontFamily: "'DM Mono', monospace", transition: "color 0.2s",
+            }}
+              onMouseEnter={e => e.target.style.color = "#C4A35A"}
+              onMouseLeave={e => e.target.style.color = "#7A8A8E"}
+            >
+              {item}
+            </a>
+          ))}
+          <button onClick={onFieldNotes} style={{
+            background: "none", border: "none", cursor: "pointer", padding: 0,
             fontSize: "11px", letterSpacing: "2.5px", textTransform: "uppercase",
             color: "#7A8A8E", fontFamily: "'DM Mono', monospace", transition: "color 0.2s",
           }}
             onMouseEnter={e => e.target.style.color = "#C4A35A"}
             onMouseLeave={e => e.target.style.color = "#7A8A8E"}
           >
-            {item}
-          </a>
-        ))}
-        <button onClick={onFieldNotes} style={{
-          background: "none", border: "none", cursor: "pointer", padding: 0,
-          fontSize: "11px", letterSpacing: "2.5px", textTransform: "uppercase",
-          color: "#7A8A8E", fontFamily: "'DM Mono', monospace", transition: "color 0.2s",
-        }}
-          onMouseEnter={e => e.target.style.color = "#C4A35A"}
-          onMouseLeave={e => e.target.style.color = "#7A8A8E"}
-        >
-          Field Notes
-        </button>
-      </div>
+            Field Notes
+          </button>
+        </div>
+      )}
     </nav>
   );
 }
@@ -99,7 +164,7 @@ function Hero({ scrollY }) {
         opacity: videoOpacity,
         filter: "brightness(0.9)",
       }}>
-        <div style={{
+        <div className="hero-video-wrap" style={{
           position: "absolute", inset: "-10%",
           transform: `scale(${videoScale}) translateY(${videoY * 0.5}px)`,
           transition: "transform 0.1s ease-out",
@@ -125,12 +190,13 @@ function Hero({ scrollY }) {
             }}
           />
         </div>
+        <img className="hero-image" src="/og-image.jpg" alt="" aria-hidden="true" />
       </div>
       {/* Gradient */}
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, #0A0E12 0%, rgba(10,14,18,0.2) 50%, rgba(10,14,18,0.4) 100%)" }} />
 
       {/* Coordinates */}
-      <div style={{
+      <div className="hero-coords" style={{
         position: "absolute", top: "50%", right: "24px",
         transform: "translateY(-50%) rotate(90deg)",
         fontSize: "9px", letterSpacing: "3px", color: "rgba(196,163,90,0.5)",
