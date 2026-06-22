@@ -90,7 +90,7 @@ export default function LatestPost({ onReadPost }) {
           </div>
 
           <h3 style={{
-            fontFamily: "'Playfair Display', serif",
+            fontFamily: "-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif",
             fontSize: "clamp(24px, 6vw, 36px)",
             fontWeight: 700, lineHeight: 1.15,
             color: hovered ? "#EDE8DF" : "#C9C2B7",

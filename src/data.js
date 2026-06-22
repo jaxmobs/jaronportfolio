@@ -62,10 +62,10 @@ export const PROJECTS = [
 ];
 
 export const SKILLS = [
-  { label: "Cinematography", value: 95 },
-  { label: "Color Grading", value: 90 },
-  { label: "Mini-Docs", value: 88 },
-  { label: "Brand Storytelling", value: 85 },
+  "Outdoor Storytelling",
+  "Cinematography",
+  "Photography",
+  "Color Grading",
 ];
 
 export const FILTERS = ["all", "mini-doc", "brand", "gear", "editorial"];

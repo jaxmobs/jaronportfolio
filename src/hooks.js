@@ -13,13 +13,3 @@ export function useInView(threshold = 0.15) {
   }, []);
   return [ref, inView];
 }
-
-export function useScrollY() {
-  const [scrollY, setScrollY] = useState(0);
-  useEffect(() => {
-    const handle = () => setScrollY(window.scrollY);
-    window.addEventListener("scroll", handle, { passive: true });
-    return () => window.removeEventListener("scroll", handle);
-  }, []);
-  return scrollY;
-}

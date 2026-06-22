@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useInView } from "../hooks.js";
 import VideoModal from "./VideoModal.jsx";
 
 export default function ProjectCard({ project, index }) {
   const [hovered, setHovered] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const [previewReady, setPreviewReady] = useState(false);
+  const dismissTimer = useRef(null);
   const [ref, inView] = useInView(0.1);
   const isEven = index % 2 === 0;
   const hasVideo = !!project.youtubeId;
@@ -22,8 +24,18 @@ export default function ProjectCard({ project, index }) {
           cursor: hasVideo ? "pointer" : "default",
         }}
         onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
+        onMouseLeave={() => {
+          setHovered(false);
+          setPreviewReady(false);
+          if (dismissTimer.current) { clearTimeout(dismissTimer.current); dismissTimer.current = null; }
+        }}
         onClick={() => hasVideo && setModalOpen(true)}
+        role={hasVideo ? "button" : undefined}
+        tabIndex={hasVideo ? 0 : undefined}
+        aria-label={hasVideo ? `Play ${project.title}` : undefined}
+        onKeyDown={hasVideo ? (e) => {
+          if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setModalOpen(true); }
+        } : undefined}
       >
         {/* Thumbnail */}
         <div style={{ position: "relative", overflow: "hidden", aspectRatio: "16/9" }}>
@@ -48,6 +60,11 @@ export default function ProjectCard({ project, index }) {
                 src={`https://www.youtube.com/embed/${project.youtubeId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${project.youtubeId}&rel=0&playsinline=1&modestbranding=1&start=0`}
                 title={`${project.title} preview`}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                onLoad={() => {
+                  // Hold the icon a beat past load so it covers the buffer gap,
+                  // then fade it as the preview actually becomes visible.
+                  dismissTimer.current = setTimeout(() => setPreviewReady(true), 350);
+                }}
                 style={{
                   position: "absolute",
                   top: "50%",
@@ -78,8 +95,8 @@ export default function ProjectCard({ project, index }) {
                 borderRadius: "50%",
                 border: "2px solid rgba(196,163,90,0.8)",
                 display: "flex", alignItems: "center", justifyContent: "center",
-                opacity: hovered ? 1 : 0,
-                transform: hovered ? "scale(1)" : "scale(0.8)",
+                opacity: hovered && !previewReady ? 1 : 0,
+                transform: hovered && !previewReady ? "scale(1)" : "scale(0.8)",
                 transition: "all 0.3s ease",
                 background: "rgba(10,14,18,0.6)",
               }}>
@@ -116,7 +133,7 @@ export default function ProjectCard({ project, index }) {
             {project.client}
           </div>
           <div style={{
-            fontSize: "20px", fontFamily: "'Playfair Display', serif",
+            fontSize: "20px", fontFamily: "-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif",
             color: "#EDE8DF", fontWeight: 700, lineHeight: 1.2, marginBottom: "8px",
           }}>
             {project.title}

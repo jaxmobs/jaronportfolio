@@ -42,7 +42,7 @@ export default function LifeMottoSection() {
       {/* LIFE Magazine stamp */}
       <div style={{
         position: "absolute", top: "28px", right: "24px",
-        fontFamily: "'Playfair Display', serif",
+        fontFamily: "-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif",
         fontSize: "11px", letterSpacing: "6px",
         color: "rgba(196,163,90,0.15)",
         textTransform: "uppercase",
@@ -70,7 +70,7 @@ export default function LifeMottoSection() {
       </div>
 
       <p style={{
-        fontFamily: "'Playfair Display', serif",
+        fontFamily: "-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif",
         fontSize: "clamp(24px, 7vw, 44px)",
         fontWeight: 700, lineHeight: 1.35,
         color: "#EDE8DF", maxWidth: "560px",

@@ -1,20 +1,25 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { PROJECTS, SKILLS, FILTERS, GALLERY } from "./data.js";
-import { useScrollY } from "./hooks.js";
 import FadeIn from "./components/FadeIn.jsx";
 import ProjectCard from "./components/ProjectCard.jsx";
 import GallerySection from "./components/GallerySection.jsx";
-import SkillBar from "./components/SkillBar.jsx";
-import LifeMottoSection from "./components/LifeMottoSection.jsx";
 import BlogPage from "./components/BlogPage.jsx";
 import LatestPost from "./components/LatestPost.jsx";
 import { POSTS } from "./blog.js";
 import GALLERY_COLORS from "./gallery-colors.json";
 
+// Smooth-scroll to an in-page section. Used by the nav and the hero CTAs so
+// every in-page link behaves the same (native hash jumps are unreliable here).
+function scrollToHash(hash) {
+  const el = document.getElementById(hash.slice(1));
+  if (el) el.scrollIntoView({ behavior: "smooth" });
+  history.replaceState(null, "", hash);
+}
+
 // ─── Global styles injected once ───────────────────────────────────────────
 const GlobalStyles = () => (
   <style>{`
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,600;1,700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap');
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body { background: #0A0E12; }
@@ -22,56 +27,168 @@ const GlobalStyles = () => (
     ::-webkit-scrollbar-track { background: #0A0E12; }
     ::-webkit-scrollbar-thumb { background: #C4A35A; border-radius: 2px; }
     a { color: inherit; text-decoration: none; }
+    a:focus-visible, button:focus-visible { outline: 2px solid #C4A35A; outline-offset: 3px; border-radius: 2px; }
+    [role="button"]:focus-visible { outline: 2px solid #C4A35A; outline-offset: 3px; }
     @keyframes scrollPulse { 0%,100%{opacity:0.4} 50%{opacity:1} }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+      }
+    }
+    .nav-desktop { display: flex; gap: 32px; align-items: center; }
+    .nav-mobile-toggle { display: none; flex-direction: column; justify-content: center; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; }
+    @media (max-width: 720px) {
+      .nav-desktop { display: none; }
+      .nav-mobile-toggle { display: flex; }
+    }
   `}</style>
 );
 
 // ─── Nav ────────────────────────────────────────────────────────────────────
-function Nav({ scrollY, onNav, onFieldNotes }) {
-  const solid = scrollY > 60;
+function Nav({ onNav, onFieldNotes }) {
+  // Self-subscribe to a derived boolean so the nav only re-renders when the
+  // background actually flips — not on every scroll frame.
+  const [solid, setSolid] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const links = ["Work", "Gallery", "About", "Contact"];
+
+  useEffect(() => {
+    const onScroll = () => setSolid(window.scrollY > 60);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Close the mobile menu on Escape.
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKey = (e) => { if (e.key === "Escape") setMenuOpen(false); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [menuOpen]);
+
+  const desktopLink = {
+    fontSize: "11px", letterSpacing: "2.5px", textTransform: "uppercase",
+    color: "#7A8A8E", fontFamily: "'DM Mono', monospace", transition: "color 0.2s",
+  };
+  const bar = { width: "22px", height: "2px", background: "#EDE8DF", borderRadius: "1px", display: "block" };
+
+  const goTo = (e, hash) => {
+    if (e) e.preventDefault();
+    const onSubpage = !!onNav;
+    setMenuOpen(false);
+    if (onSubpage) onNav(null);
+    // Defer the scroll until after the menu overlay / sub-page has unmounted,
+    // otherwise the re-render interrupts the smooth scroll.
+    setTimeout(() => scrollToHash(hash), onSubpage ? 80 : 0);
+  };
+  const handleFieldNotes = () => { setMenuOpen(false); onFieldNotes && onFieldNotes(); };
+
   return (
-    <nav style={{
-      position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
-      padding: "20px 24px",
-      display: "flex", justifyContent: "space-between", alignItems: "center",
-      background: solid ? "rgba(10,14,18,0.97)" : "transparent",
-      borderBottom: solid ? "1px solid rgba(196,163,90,0.12)" : "none",
-      transition: "background 0.4s ease, border-color 0.4s ease",
-    }}>
-      <div style={{ fontFamily: "'Playfair Display', serif", fontSize: "18px", fontWeight: 700, letterSpacing: "1px", color: "#EDE8DF" }}>
-        Jaron <span style={{ color: "#C4A35A" }}>Mobley</span>
-      </div>
-      <div style={{ display: "flex", gap: "32px" }}>
-        {["Work", "Gallery", "About", "Contact"].map(item => (
-          <a key={item} href={`#${item.toLowerCase()}`} onClick={() => onNav && onNav(null)} style={{
-            fontSize: "11px", letterSpacing: "2.5px", textTransform: "uppercase",
-            color: "#7A8A8E", fontFamily: "'DM Mono', monospace", transition: "color 0.2s",
-          }}
+    <>
+      <nav style={{
+        position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
+        padding: "20px 24px",
+        display: "flex", justifyContent: "space-between", alignItems: "center",
+        background: solid ? "rgba(10,14,18,0.97)" : "transparent",
+        borderBottom: solid ? "1px solid rgba(196,163,90,0.12)" : "none",
+        transition: "background 0.4s ease, border-color 0.4s ease",
+      }}>
+        <div style={{ fontFamily: "-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif", fontSize: "18px", fontWeight: 700, letterSpacing: "1px", color: "#EDE8DF", whiteSpace: "nowrap" }}>
+          Jaron <span style={{ color: "#C4A35A" }}>Mobley</span>
+        </div>
+
+        {/* Desktop links */}
+        <div className="nav-desktop">
+          {links.map(item => (
+            <a key={item} href={`#${item.toLowerCase()}`} onClick={(e) => goTo(e, `#${item.toLowerCase()}`)} style={desktopLink}
+              onMouseEnter={e => e.target.style.color = "#C4A35A"}
+              onMouseLeave={e => e.target.style.color = "#7A8A8E"}
+            >
+              {item}
+            </a>
+          ))}
+          <button onClick={handleFieldNotes} style={{ ...desktopLink, background: "none", border: "none", cursor: "pointer", padding: 0 }}
             onMouseEnter={e => e.target.style.color = "#C4A35A"}
             onMouseLeave={e => e.target.style.color = "#7A8A8E"}
           >
-            {item}
-          </a>
-        ))}
-        <button onClick={onFieldNotes} style={{
-          background: "none", border: "none", cursor: "pointer", padding: 0,
-          fontSize: "11px", letterSpacing: "2.5px", textTransform: "uppercase",
-          color: "#7A8A8E", fontFamily: "'DM Mono', monospace", transition: "color 0.2s",
-        }}
-          onMouseEnter={e => e.target.style.color = "#C4A35A"}
-          onMouseLeave={e => e.target.style.color = "#7A8A8E"}
-        >
-          Field Notes
+            Field Notes
+          </button>
+        </div>
+
+        {/* Mobile hamburger */}
+        <button className="nav-mobile-toggle" aria-label="Open menu" onClick={() => setMenuOpen(true)}>
+          <span style={bar} />
+          <span style={bar} />
+          <span style={bar} />
         </button>
-      </div>
-    </nav>
+      </nav>
+
+      {/* Mobile menu overlay */}
+      {menuOpen && (
+        <div
+          onClick={(e) => { if (e.target === e.currentTarget) setMenuOpen(false); }}
+          style={{
+            position: "fixed", inset: 0, zIndex: 200,
+            background: "rgba(10,14,18,0.98)",
+            display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "30px",
+          }}>
+          <button onClick={() => setMenuOpen(false)} aria-label="Close menu" style={{
+            position: "absolute", top: "22px", right: "24px",
+            background: "none", border: "1px solid rgba(196,163,90,0.3)", color: "#C4A35A",
+            width: "38px", height: "38px", fontSize: "16px", cursor: "pointer",
+            display: "flex", alignItems: "center", justifyContent: "center",
+          }}>✕</button>
+          {links.map(item => (
+            <a key={item} href={`#${item.toLowerCase()}`} onClick={(e) => goTo(e, `#${item.toLowerCase()}`)} style={{
+              fontSize: "17px", letterSpacing: "3px", textTransform: "uppercase",
+              color: "#EDE8DF", fontFamily: "'DM Mono', monospace",
+            }}>
+              {item}
+            </a>
+          ))}
+          <button onClick={handleFieldNotes} style={{
+            background: "none", border: "none", cursor: "pointer",
+            fontSize: "17px", letterSpacing: "3px", textTransform: "uppercase",
+            color: "#EDE8DF", fontFamily: "'DM Mono', monospace",
+          }}>
+            Field Notes
+          </button>
+        </div>
+      )}
+    </>
   );
 }
 
 // ─── Hero ────────────────────────────────────────────────────────────────────
-function Hero({ scrollY }) {
+function Hero() {
   const [loaded, setLoaded] = useState(false);
+  const fadeRef = useRef(null);   // outer wrapper — opacity fade on scroll
+  const scaleRef = useRef(null);  // inner wrapper — parallax scale + drift
+
   useEffect(() => { const t = setTimeout(() => setLoaded(true), 100); return () => clearTimeout(t); }, []);
+
+  // Drive the parallax straight to the DOM via rAF instead of storing scroll
+  // position in React state — avoids re-rendering the whole page on every frame.
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const progress = Math.min(window.scrollY / (window.innerHeight || 600), 1);
+      if (fadeRef.current) fadeRef.current.style.opacity = String(1 - progress * 0.7);
+      if (scaleRef.current) {
+        scaleRef.current.style.transform = `scale(${1.08 + progress * 0.15}) translateY(${window.scrollY * 0.125}px)`;
+      }
+    };
+    const onScroll = () => { if (!raf) raf = requestAnimationFrame(update); };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => { window.removeEventListener("scroll", onScroll); if (raf) cancelAnimationFrame(raf); };
+  }, []);
 
   const show = (delay) => ({
     opacity: loaded ? 1 : 0,
@@ -79,23 +196,17 @@ function Hero({ scrollY }) {
     transition: `opacity 0.8s ease ${delay}s, transform 0.8s ease ${delay}s`,
   });
 
-  const heroHeight = typeof window !== "undefined" ? window.innerHeight : 600;
-  const scrollProgress = Math.min(scrollY / heroHeight, 1);
-  const videoOpacity = 1 - scrollProgress * 0.7;
-  const videoScale = 1.08 + scrollProgress * 0.15;
-  const videoY = scrollY * 0.25;
-
   return (
     <section style={{ position: "relative", height: "100svh", display: "flex", flexDirection: "column", justifyContent: "flex-end", overflow: "hidden" }}>
       {/* BG Video — scroll-reactive parallax, fade, and scale */}
-      <div style={{
+      <div ref={fadeRef} style={{
         position: "absolute", inset: 0, overflow: "hidden",
-        opacity: videoOpacity,
+        opacity: 1,
         filter: "brightness(0.9)",
       }}>
-        <div style={{
+        <div ref={scaleRef} style={{
           position: "absolute", inset: "-10%",
-          transform: `scale(${videoScale}) translateY(${videoY * 0.5}px)`,
+          transform: "scale(1.08) translateY(0px)",
           transition: "transform 0.1s ease-out",
         }}>
           <video
@@ -138,7 +249,7 @@ function Hero({ scrollY }) {
         <div style={{ fontSize: "10px", letterSpacing: "4px", textTransform: "uppercase", color: "#C4A35A", fontFamily: "'DM Mono', monospace", marginBottom: "16px", ...show(0.3) }}>
           Videographer — Palmer, Alaska
         </div>
-        <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(42px, 10vw, 86px)", fontWeight: 900, lineHeight: 0.95, color: "#EDE8DF", ...show(0.5) }}>
+        <h1 style={{ fontFamily: "-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif", fontSize: "clamp(42px, 10vw, 86px)", fontWeight: 900, lineHeight: 0.95, color: "#EDE8DF", ...show(0.5) }}>
           Stories from<br />
           <em style={{ color: "#C4A35A" }}>the edge</em><br />
           of the map.
@@ -147,10 +258,10 @@ function Hero({ scrollY }) {
           Outdoor media, mini-docs, and brand storytelling — shot in the wild corners of Alaska.
         </p>
         <div style={{ marginTop: "36px", display: "flex", gap: "16px", alignItems: "center", ...show(1.0) }}>
-          <a href="#work" style={{ padding: "12px 28px", background: "#C4A35A", color: "#0A0E12", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", fontFamily: "'DM Mono', monospace", fontWeight: 500 }}>
+          <a href="#work" onClick={(e) => { e.preventDefault(); scrollToHash("#work"); }} style={{ padding: "12px 28px", background: "#C4A35A", color: "#0A0E12", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", fontFamily: "'DM Mono', monospace", fontWeight: 500 }}>
             View Work
           </a>
-          <a href="#about" style={{ fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", color: "#7A8A8E", fontFamily: "'DM Mono', monospace" }}>
+          <a href="#about" onClick={(e) => { e.preventDefault(); scrollToHash("#about"); }} style={{ fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", color: "#7A8A8E", fontFamily: "'DM Mono', monospace" }}>
             About ↓
           </a>
         </div>
@@ -172,7 +283,7 @@ function StatsBar() {
         <div style={{ maxWidth: "560px" }}>
           <div style={{ width: "32px", height: "2px", background: "#C4A35A", marginBottom: "20px" }} />
           <p style={{
-            fontFamily: "'Playfair Display', serif",
+            fontFamily: "-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif",
             fontSize: "clamp(16px, 4vw, 22px)",
             fontStyle: "italic",
             fontWeight: 700,
@@ -206,7 +317,7 @@ function WorkSection() {
           <div style={{ fontSize: "9px", letterSpacing: "4px", textTransform: "uppercase", color: "#C4A35A", fontFamily: "'DM Mono', monospace", marginBottom: "12px" }}>
             Selected Work
           </div>
-          <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(32px, 8vw, 52px)", fontWeight: 700, lineHeight: 1.1, color: "#EDE8DF" }}>
+          <h2 style={{ fontFamily: "-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif", fontSize: "clamp(32px, 8vw, 52px)", fontWeight: 700, lineHeight: 1.1, color: "#EDE8DF" }}>
             The reel.
           </h2>
         </div>
@@ -238,57 +349,6 @@ function WorkSection() {
   );
 }
 
-// ─── Pucknote feature blurb ───────────────────────────────────────────────────
-function PucknoteSection() {
-  return (
-    <section style={{ padding: "80px 24px", background: "#0D1218", borderTop: "1px solid rgba(196,163,90,0.08)", borderBottom: "1px solid rgba(196,163,90,0.08)" }}>
-      <FadeIn>
-        <div style={{ fontSize: "9px", letterSpacing: "4px", textTransform: "uppercase", color: "#C4A35A", fontFamily: "'DM Mono', monospace", marginBottom: "12px" }}>
-          Featured
-        </div>
-        <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(28px, 6vw, 42px)", fontWeight: 700, lineHeight: 1.2, marginBottom: "16px", color: "#EDE8DF" }}>
-          <span style={{ color: "#C4A35A" }}>pucknote</span> — Coffee brewing for home baristas
-        </h2>
-      </FadeIn>
-      <FadeIn delay={0.1}>
-        <p style={{ fontSize: "15px", color: "#8FA99A", lineHeight: 1.75, maxWidth: "420px", fontWeight: 300, marginBottom: "28px" }}>
-          Dial in and keep track of your favorite coffees, organize and create recipes, and share them with friends. Precise calculators for espresso and pour-over, step-by-step brew timers, and detailed notes so you can perfect every cup.
-        </p>
-        <a
-          href="https://www.pucknote.com/"
-          target="_blank"
-          rel="noreferrer"
-          style={{
-            display: "inline-block",
-            padding: "12px 28px",
-            background: "#C4A35A",
-            color: "#0A0E12",
-            fontSize: "10px",
-            letterSpacing: "2px",
-            textTransform: "uppercase",
-            fontFamily: "'DM Mono', monospace",
-            fontWeight: 500,
-            border: "1px solid transparent",
-            transition: "background 0.2s, border-color 0.2s, color 0.2s",
-          }}
-          onMouseEnter={e => {
-            e.currentTarget.style.background = "transparent";
-            e.currentTarget.style.borderColor = "#C4A35A";
-            e.currentTarget.style.color = "#C4A35A";
-          }}
-          onMouseLeave={e => {
-            e.currentTarget.style.background = "#C4A35A";
-            e.currentTarget.style.borderColor = "transparent";
-            e.currentTarget.style.color = "#0A0E12";
-          }}
-        >
-          Check it out
-        </a>
-      </FadeIn>
-    </section>
-  );
-}
-
 // ─── About section ───────────────────────────────────────────────────────────
 function AboutSection() {
   return (
@@ -297,7 +357,7 @@ function AboutSection() {
         <div style={{ fontSize: "9px", letterSpacing: "4px", textTransform: "uppercase", color: "#C4A35A", fontFamily: "'DM Mono', monospace", marginBottom: "12px" }}>
           About
         </div>
-        <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(32px, 8vw, 48px)", fontWeight: 700, lineHeight: 1.1, marginBottom: "28px", color: "#EDE8DF" }}>
+        <h2 style={{ fontFamily: "-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif", fontSize: "clamp(32px, 8vw, 48px)", fontWeight: 700, lineHeight: 1.1, marginBottom: "28px", color: "#EDE8DF" }}>
           Built for the<br /><em style={{ color: "#C4A35A" }}>field.</em>
         </h2>
       </FadeIn>
@@ -307,16 +367,21 @@ function AboutSection() {
           Freelance videographer based in Palmer, Alaska. I make outdoor media, mini-documentaries, and brand films for companies and organizations operating at the edge of the last frontier.
         </p>
         <p style={{ fontSize: "15px", color: "#8FA99A", lineHeight: 1.8, maxWidth: "420px", fontWeight: 300, marginBottom: "40px" }}>
-          Four years of shooting in extreme conditions, from -20°F winters to peak summer alpine. Available nights and weekends.
+          Years of shooting in extreme conditions, from -40°F winters to peak summer alpine. Available nights and weekends.
         </p>
       </FadeIn>
 
       <FadeIn delay={0.2}>
-        <div style={{ maxWidth: "360px" }}>
-          {SKILLS.map((s, i) => (
-            <SkillBar key={s.label} label={s.label} value={s.value} delay={0.2 + i * 0.1} />
+        <ul style={{ maxWidth: "360px", listStyle: "none", padding: 0, margin: 0 }}>
+          {SKILLS.map((s) => (
+            <li key={s} style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "16px" }}>
+              <span style={{ width: "6px", height: "6px", background: "#C4A35A", borderRadius: "50%", flexShrink: 0 }} />
+              <span style={{ fontSize: "14px", letterSpacing: "1.5px", textTransform: "uppercase", color: "#EDE8DF", fontFamily: "'DM Mono', monospace" }}>
+                {s}
+              </span>
+            </li>
           ))}
-        </div>
+        </ul>
       </FadeIn>
 
       {/* Ansel Adams */}
@@ -325,7 +390,7 @@ function AboutSection() {
           <div style={{ fontSize: "9px", letterSpacing: "3px", color: "#C4A35A", fontFamily: "'DM Mono', monospace", textTransform: "uppercase", marginBottom: "10px" }}>
             Influence
           </div>
-          <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "16px", fontStyle: "italic", color: "#8FA99A", lineHeight: 1.6, maxWidth: "360px" }}>
+          <p style={{ fontFamily: "-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif", fontSize: "16px", fontStyle: "italic", color: "#8FA99A", lineHeight: 1.6, maxWidth: "360px" }}>
             "You don't take a photograph, you make it."
           </p>
           <div style={{ marginTop: "8px", fontSize: "10px", letterSpacing: "2px", color: "#4A5A60", fontFamily: "'DM Mono', monospace", textTransform: "uppercase" }}>
@@ -334,26 +399,6 @@ function AboutSection() {
           <p style={{ marginTop: "12px", fontSize: "13px", color: "#4A5A60", lineHeight: 1.7, maxWidth: "340px", fontWeight: 300 }}>
             Adams taught that every frame is a decision, not a capture. That philosophy lives in every shot I take in the field.
           </p>
-        </div>
-      </FadeIn>
-
-      {/* Toolchain */}
-      <FadeIn delay={0.3}>
-        <div style={{ marginTop: "40px" }}>
-          <div style={{ fontSize: "9px", letterSpacing: "3px", color: "#4A5A60", fontFamily: "'DM Mono', monospace", textTransform: "uppercase", marginBottom: "14px" }}>
-            Toolchain
-          </div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-            {["DaVinci Resolve", "Final Cut Pro X", "Cineprint 35", "Lens Node", "DJI", "Sony FX"].map(t => (
-              <span key={t} style={{
-                fontSize: "10px", letterSpacing: "1.5px", textTransform: "uppercase",
-                color: "#7A8A8E", fontFamily: "'DM Mono', monospace",
-                border: "1px solid rgba(122,138,142,0.2)", padding: "5px 10px",
-              }}>
-                {t}
-              </span>
-            ))}
-          </div>
         </div>
       </FadeIn>
     </section>
@@ -367,19 +412,19 @@ function QuoteSection() {
       <div style={{
         position: "absolute", top: "50%", left: "50%",
         transform: "translate(-50%, -50%)",
-        fontSize: "clamp(80px, 30vw, 200px)", fontFamily: "'Playfair Display', serif",
+        fontSize: "clamp(80px, 30vw, 200px)", fontFamily: "-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif",
         color: "rgba(196,163,90,0.04)", lineHeight: 1, userSelect: "none", whiteSpace: "nowrap",
       }}>
         ALASKA
       </div>
       <FadeIn>
-        <blockquote style={{ position: "relative", zIndex: 1 }}>
-          <div style={{ width: "40px", height: "2px", background: "#C4A35A", marginBottom: "24px" }} />
+        <blockquote style={{ position: "relative", zIndex: 1, maxWidth: "640px", margin: "0 auto", textAlign: "center" }}>
+          <div style={{ width: "40px", height: "2px", background: "#C4A35A", margin: "0 auto 24px" }} />
           <p style={{
-            fontFamily: "'Playfair Display', serif",
+            fontFamily: "-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif",
             fontSize: "clamp(22px, 6vw, 36px)",
             fontWeight: 700, lineHeight: 1.3, fontStyle: "italic",
-            color: "#EDE8DF", maxWidth: "480px",
+            color: "#EDE8DF", maxWidth: "560px", margin: "0 auto",
           }}>
             "The camera isn't a technological advancement. It's a tool for understanding and experiencing humanity at its fullest."
           </p>
@@ -412,7 +457,7 @@ function ContactSection() {
         <div style={{ fontSize: "9px", letterSpacing: "4px", textTransform: "uppercase", color: "#C4A35A", fontFamily: "'DM Mono', monospace", marginBottom: "12px" }}>
           Contact
         </div>
-        <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(32px, 8vw, 52px)", fontWeight: 700, lineHeight: 1.1, marginBottom: "16px", color: "#EDE8DF" }}>
+        <h2 style={{ fontFamily: "-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif", fontSize: "clamp(32px, 8vw, 52px)", fontWeight: 700, lineHeight: 1.1, marginBottom: "16px", color: "#EDE8DF" }}>
           Let's make<br /><em style={{ color: "#C4A35A" }}>something.</em>
         </h2>
         <p style={{ fontSize: "14px", color: "#7A8A8E", lineHeight: 1.7, maxWidth: "340px", marginBottom: "40px", fontWeight: 300 }}>
@@ -449,13 +494,46 @@ function ContactSection() {
   );
 }
 
+// ─── Gallery data (computed once per page load) ───────────────────────────────
+const GALLERY_ALL = [
+  ...POSTS.flatMap(post => post.images.map((src, i) => ({
+    id: `blog-${post.id}-${i}`,
+    src,
+    alt: post.title,
+    caption: post.title,
+    date: post.date,
+  }))),
+  ...GALLERY,
+];
+
+// Full wall, arranged by color for the standalone gallery page.
+const GALLERY_SORTED = [...GALLERY_ALL].sort((a, b) => {
+  const ca = GALLERY_COLORS[a.src] ?? { h: 0, s: 0, l: 0.5 };
+  const cb = GALLERY_COLORS[b.src] ?? { h: 0, s: 0, l: 0.5 };
+  return ca.h - cb.h;
+});
+
+// Homepage preview: a fresh random sample each visit. Shuffled once at load so
+// it stays put while the visitor browses, then re-mixes on the next refresh.
+const GALLERY_SHUFFLED = (() => {
+  const copy = [...GALLERY_ALL];
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+})();
+
+const GALLERY_PREVIEW_COUNT = 8;
+
 // ─── Root App ─────────────────────────────────────────────────────────────────
 export default function App() {
-  const scrollY = useScrollY();
   const [blogPostId, setBlogPostId] = useState(null);
   const [showBlog, setShowBlog] = useState(false);
+  const [showGallery, setShowGallery] = useState(false);
 
   const openBlog = (postId = null) => {
+    setShowGallery(false);
     setShowBlog(true);
     setBlogPostId(postId);
     window.scrollTo(0, 0);
@@ -467,12 +545,37 @@ export default function App() {
     window.scrollTo(0, 0);
   };
 
+  const openGallery = () => {
+    setShowBlog(false);
+    setShowGallery(true);
+    window.scrollTo(0, 0);
+  };
+
+  const closeGallery = () => {
+    setShowGallery(false);
+    window.scrollTo(0, 0);
+  };
+
   if (showBlog) {
     return (
       <div style={{ background: "#0A0E12", minHeight: "100vh", fontFamily: "'DM Sans', sans-serif", color: "#EDE8DF", overflowX: "hidden" }}>
         <GlobalStyles />
-        <Nav scrollY={scrollY} onNav={closeBlog} onFieldNotes={() => openBlog(null)} />
+        <Nav onNav={closeBlog} onFieldNotes={() => openBlog(null)} />
         <BlogPage initialPostId={blogPostId} onBack={closeBlog} />
+      </div>
+    );
+  }
+
+  if (showGallery) {
+    return (
+      <div style={{ background: "#0A0E12", minHeight: "100vh", fontFamily: "'DM Sans', sans-serif", color: "#EDE8DF", overflowX: "hidden" }}>
+        <GlobalStyles />
+        <Nav onNav={closeGallery} onFieldNotes={() => openBlog(null)} />
+        <GallerySection items={GALLERY_SORTED} asPage onBack={closeGallery} />
+        <footer style={{ padding: "24px", borderTop: "1px solid rgba(196,163,90,0.08)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div style={{ fontFamily: "-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif", fontSize: "14px", color: "#3A4A50" }}>Jaron Mobley</div>
+          <div style={{ fontSize: "9px", letterSpacing: "2px", color: "#3A4A50", fontFamily: "'DM Mono', monospace" }}>© 2025 — Palmer, AK</div>
+        </footer>
       </div>
     );
   }
@@ -480,31 +583,17 @@ export default function App() {
   return (
     <div style={{ background: "#0A0E12", minHeight: "100vh", fontFamily: "'DM Sans', sans-serif", color: "#EDE8DF", overflowX: "hidden" }}>
       <GlobalStyles />
-      <Nav scrollY={scrollY} onNav={null} onFieldNotes={() => openBlog(null)} />
-      <Hero scrollY={scrollY} />
+      <Nav onNav={null} onFieldNotes={() => openBlog(null)} />
+      <Hero />
       <StatsBar />
       <WorkSection />
-      <GallerySection items={[
-        ...POSTS.flatMap(post => post.images.map((src, i) => ({
-          id: `blog-${post.id}-${i}`,
-          src,
-          alt: post.title,
-          caption: post.title,
-          date: post.date,
-        }))),
-        ...GALLERY,
-      ].sort((a, b) => {
-        const ca = GALLERY_COLORS[a.src] ?? { h: 0, s: 0, l: 0.5 };
-        const cb = GALLERY_COLORS[b.src] ?? { h: 0, s: 0, l: 0.5 };
-        return ca.h - cb.h;
-      })} />
+      <GallerySection items={GALLERY_SHUFFLED} limit={GALLERY_PREVIEW_COUNT} onSeeMore={openGallery} />
       <LatestPost onReadPost={(id) => openBlog(id)} />
-      <PucknoteSection />
       <AboutSection />
       <QuoteSection />
       <ContactSection />
       <footer style={{ padding: "24px", borderTop: "1px solid rgba(196,163,90,0.08)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <div style={{ fontFamily: "'Playfair Display', serif", fontSize: "14px", color: "#3A4A50" }}>Jaron Mobley</div>
+        <div style={{ fontFamily: "-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif", fontSize: "14px", color: "#3A4A50" }}>Jaron Mobley</div>
         <div style={{ fontSize: "9px", letterSpacing: "2px", color: "#3A4A50", fontFamily: "'DM Mono', monospace" }}>© 2025 — Palmer, AK</div>
       </footer>
     </div>

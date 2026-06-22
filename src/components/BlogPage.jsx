@@ -49,7 +49,7 @@ function PostView({ post, onBack }) {
             {post.date} — {post.location}
           </div>
           <h1 style={{
-            fontFamily: "'Playfair Display', serif",
+            fontFamily: "-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif",
             fontSize: "clamp(28px, 8vw, 52px)",
             fontWeight: 900, lineHeight: 1.05, color: "#EDE8DF",
           }}>
@@ -57,7 +57,7 @@ function PostView({ post, onBack }) {
           </h1>
           <div style={{
             marginTop: "6px", fontSize: "14px", fontStyle: "italic",
-            fontFamily: "'Playfair Display', serif", color: "#8FA99A",
+            fontFamily: "-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif", color: "#8FA99A",
           }}>
             {post.subtitle}
           </div>
@@ -223,7 +223,7 @@ function PostCard({ post, onRead, index }) {
       <div style={{ fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", color: "#4A5A60", fontFamily: "'DM Mono', monospace", marginBottom: "8px" }}>
         {post.date}
       </div>
-      <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: "22px", fontWeight: 700, lineHeight: 1.2, color: hovered ? "#EDE8DF" : "#C9C2B7", marginBottom: "8px", transition: "color 0.3s" }}>
+      <h3 style={{ fontFamily: "-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif", fontSize: "22px", fontWeight: 700, lineHeight: 1.2, color: hovered ? "#EDE8DF" : "#C9C2B7", marginBottom: "8px", transition: "color 0.3s" }}>
         {post.title}
       </h3>
       <p style={{ fontSize: "13px", color: "#7A8A8E", lineHeight: 1.7, fontWeight: 300, fontFamily: "'DM Sans', sans-serif", marginBottom: "12px" }}>
@@ -271,7 +271,7 @@ export default function BlogPage({ initialPostId, onBack }) {
             <div style={{ fontSize: "9px", letterSpacing: "4px", textTransform: "uppercase", color: "#C4A35A", fontFamily: "'DM Mono', monospace", marginBottom: "12px" }}>
               Field Notes
             </div>
-            <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(32px, 8vw, 52px)", fontWeight: 700, lineHeight: 1.1, color: "#EDE8DF" }}>
+            <h2 style={{ fontFamily: "-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif", fontSize: "clamp(32px, 8vw, 52px)", fontWeight: 700, lineHeight: 1.1, color: "#EDE8DF" }}>
               From the field.
             </h2>
             <p style={{ marginTop: "14px", fontSize: "14px", color: "#7A8A8E", fontWeight: 300, lineHeight: 1.7, maxWidth: "360px" }}>
