@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useInView } from "../hooks.js";
 import VideoModal from "./VideoModal.jsx";
 
@@ -7,6 +7,9 @@ export default function ProjectCard({ project, index }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [previewReady, setPreviewReady] = useState(false);
   const dismissTimer = useRef(null);
+  const [isTouch, setIsTouch] = useState(false);
+  useEffect(() => { setIsTouch(window.matchMedia("(pointer: coarse)").matches); }, []);
+  const active = isTouch || hovered;
   const [ref, inView] = useInView(0.1);
   const isEven = index % 2 === 0;
   const hasVideo = !!project.youtubeId;
@@ -49,8 +52,8 @@ export default function ProjectCard({ project, index }) {
             }}
           />
 
-          {/* Hover video preview — Netflix-style */}
-          {hasVideo && hovered && (
+          {/* Hover video preview — desktop only */}
+          {hasVideo && hovered && !isTouch && (
             <div style={{
               position: "absolute", inset: 0, zIndex: 1,
               opacity: 1,
@@ -95,8 +98,8 @@ export default function ProjectCard({ project, index }) {
                 borderRadius: "50%",
                 border: "2px solid rgba(196,163,90,0.8)",
                 display: "flex", alignItems: "center", justifyContent: "center",
-                opacity: hovered && !previewReady ? 1 : 0,
-                transform: hovered && !previewReady ? "scale(1)" : "scale(0.8)",
+                opacity: active && !previewReady ? 1 : 0,
+                transform: active && !previewReady ? "scale(1)" : "scale(0.8)",
                 transition: "all 0.3s ease",
                 background: "rgba(10,14,18,0.6)",
               }}>
@@ -115,8 +118,8 @@ export default function ProjectCard({ project, index }) {
               position: "absolute", bottom: "16px", left: "16px",
               fontSize: "10px", letterSpacing: "3px", textTransform: "uppercase",
               color: "#C4A35A", fontFamily: "'DM Mono', monospace",
-              opacity: hovered ? 1 : 0,
-              transform: hovered ? "none" : "translateY(8px)",
+              opacity: active ? 1 : 0,
+              transform: active ? "none" : "translateY(8px)",
               transition: "all 0.35s ease",
             }}>
               {project.category} — {project.year}
@@ -140,7 +143,7 @@ export default function ProjectCard({ project, index }) {
           </div>
           <div style={{
             fontSize: "13px", color: "#7A8A8E", fontFamily: "'DM Sans', sans-serif", lineHeight: 1.6,
-            maxHeight: hovered ? "60px" : "0", overflow: "hidden",
+            maxHeight: active ? "60px" : "0", overflow: "hidden",
             transition: "max-height 0.4s ease",
           }}>
             {project.description}
@@ -149,7 +152,7 @@ export default function ProjectCard({ project, index }) {
             <div style={{
               marginTop: "8px", fontSize: "9px", letterSpacing: "2px",
               color: "#C4A35A", fontFamily: "'DM Mono', monospace", textTransform: "uppercase",
-              opacity: hovered ? 1 : 0, transition: "opacity 0.3s ease",
+              opacity: active ? 1 : 0, transition: "opacity 0.3s ease",
             }}>
               Watch Film →
             </div>

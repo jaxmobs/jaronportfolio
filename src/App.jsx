@@ -40,9 +40,15 @@ const GlobalStyles = () => (
     }
     .nav-desktop { display: flex; gap: 32px; align-items: center; }
     .nav-mobile-toggle { display: none; flex-direction: column; justify-content: center; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; }
+    .hero-image { display: none; position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; }
     @media (max-width: 720px) {
       .nav-desktop { display: none; }
       .nav-mobile-toggle { display: flex; }
+    }
+    @media (max-width: 768px) {
+      .hero-video-wrap { display: none; }
+      .hero-image { display: block; }
+      .hero-coords { display: none; }
     }
   `}</style>
 );
@@ -204,7 +210,7 @@ function Hero() {
         opacity: 1,
         filter: "brightness(0.9)",
       }}>
-        <div ref={scaleRef} style={{
+        <div ref={scaleRef} className="hero-video-wrap" style={{
           position: "absolute", inset: "-10%",
           transform: "scale(1.08) translateY(0px)",
           transition: "transform 0.1s ease-out",
@@ -229,12 +235,13 @@ function Hero() {
             }}
           />
         </div>
+        <img className="hero-image" src="/og-image.jpg" alt="" aria-hidden="true" />
       </div>
       {/* Gradient */}
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, #0A0E12 0%, rgba(10,14,18,0.2) 50%, rgba(10,14,18,0.4) 100%)" }} />
 
       {/* Coordinates */}
-      <div style={{
+      <div className="hero-coords" style={{
         position: "absolute", top: "50%", right: "24px",
         transform: "translateY(-50%) rotate(90deg)",
         fontSize: "9px", letterSpacing: "3px", color: "rgba(196,163,90,0.5)",
