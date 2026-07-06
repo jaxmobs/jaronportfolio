@@ -9,6 +9,11 @@ function PostView({ post, onBack }) {
 
   // Parse body into paragraphs
   const paragraphs = post.body.split("\n\n").filter(Boolean);
+  // Images 1..3 get placed inline between the first 3 paragraphs (if they exist).
+  // The grid below always picks up wherever inline placement left off, so no
+  // images get silently skipped when a post has fewer than 3 paragraphs.
+  const inlineImageCount = Math.min(paragraphs.length, 3, Math.max(post.images.length - 1, 0));
+  const gridStart = 1 + inlineImageCount;
 
   // Interleave: intro paragraph, then images scattered between paragraphs
   return (
@@ -113,7 +118,7 @@ function PostView({ post, onBack }) {
         ))}
 
         {/* Remaining images as a 2-up grid */}
-        {post.images.length > 4 && (
+        {post.images.length > gridStart && (
           <>
             <div style={{
               fontSize: "9px", letterSpacing: "3px", textTransform: "uppercase",
@@ -122,10 +127,10 @@ function PostView({ post, onBack }) {
               More from the day
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px", marginBottom: "40px" }}>
-              {post.images.slice(4).map((img, i) => (
+              {post.images.slice(gridStart).map((img, i) => (
                 <div
                   key={i}
-                  onClick={() => setLightbox(i + 4)}
+                  onClick={() => setLightbox(i + gridStart)}
                   style={{ cursor: "zoom-in", overflow: "hidden", aspectRatio: "1/1" }}
                 >
                   <img

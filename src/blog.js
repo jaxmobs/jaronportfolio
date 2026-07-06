@@ -9,6 +9,28 @@
 
 export const POSTS = [
   {
+    id: "mount-marathon-2026",
+    title: "The Toughest 5K in the World: Mount Marathon 2026",
+    subtitle: "Seward, Alaska",
+    date: "July 2026",
+    location: "Seward, Alaska",
+    heroImage: "/blog/mount-marathon-2026-03.jpg",
+    body: `After years of growing up seeing my friends and family participate photographing Mount Marathon has become a well loved yearly tradition. This year was fun to spectate and I would hope it was a great time for the racers as the conditions were quite dynamic. Congrats to the racers and I can't wait to be back next year!`,
+    images: [
+      "/blog/mount-marathon-2026-03.jpg",
+      "/blog/mount-marathon-2026-01.jpg",
+      "/blog/mount-marathon-2026-02.jpg",
+      "/blog/mount-marathon-2026-04.jpg",
+      "/blog/mount-marathon-2026-05.jpg",
+      "/blog/mount-marathon-2026-06.jpg",
+      "/blog/mount-marathon-2026-07.jpg",
+      "/blog/mount-marathon-2026-08.jpg",
+      "/blog/mount-marathon-2026-09.jpg",
+      "/blog/mount-marathon-2026-10.jpg",
+    ],
+    tags: ["mount marathon", "seward", "alaska", "race", "trail running"],
+  },
+  {
     id: "knik-glacier-xt3",
     title: "Fat Bikes to the Knik Glacier",
     subtitle: "Fujifilm X-T3",
