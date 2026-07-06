@@ -37,11 +37,16 @@ export default function LatestPost({ onReadPost }) {
       </div>
 
       {/* Card */}
-      <div
-        onClick={() => onReadPost(post.id)}
+      <a
+        href={`/blog/${post.id}`}
+        onClick={(e) => {
+          if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+          e.preventDefault();
+          onReadPost(post.id);
+        }}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
-        style={{ cursor: "pointer" }}
+        style={{ display: "block", textDecoration: "none", color: "inherit", cursor: "pointer" }}
       >
         {/* Hero image */}
         <div style={{
@@ -139,7 +144,7 @@ export default function LatestPost({ onReadPost }) {
             ))}
           </div>
         </div>
-      </div>
+      </a>
     </section>
   );
 }

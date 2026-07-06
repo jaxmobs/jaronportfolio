@@ -195,12 +195,20 @@ function PostCard({ post, onRead, index }) {
   const [ref, inView] = useInView(0.1);
 
   return (
-    <div
+    <a
       ref={ref}
-      onClick={() => onRead(post.id)}
+      href={`/blog/${post.id}`}
+      onClick={(e) => {
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+        e.preventDefault();
+        onRead(post.id);
+      }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
+        display: "block",
+        textDecoration: "none",
+        color: "inherit",
         cursor: "pointer",
         opacity: inView ? 1 : 0,
         transform: inView ? "none" : "translateY(30px)",
@@ -237,18 +245,19 @@ function PostCard({ post, onRead, index }) {
       <div style={{ fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", color: "#C4A35A", fontFamily: "'DM Mono', monospace", display: "flex", alignItems: "center", gap: "6px" }}>
         Read <span style={{ transform: hovered ? "translateX(4px)" : "none", transition: "transform 0.3s", display: "inline-block" }}>→</span>
       </div>
-    </div>
+    </a>
   );
 }
 
 // ─── Blog index page ─────────────────────────────────────────────────────────
-export default function BlogPage({ initialPostId, onBack }) {
-  const [activePost, setActivePost] = useState(initialPostId || null);
-
-  const post = activePost ? POSTS.find(p => p.id === activePost) : null;
+// Controlled by the parent (App.jsx) so every entry point into a post — the
+// homepage card, this index list — updates the same URL, keeping /blog/:id
+// links shareable no matter how the visitor got there.
+export default function BlogPage({ activePostId, onOpenPost, onBack }) {
+  const post = activePostId ? POSTS.find(p => p.id === activePostId) : null;
 
   if (post) {
-    return <PostView post={post} onBack={() => setActivePost(null)} />;
+    return <PostView post={post} onBack={() => onOpenPost(null)} />;
   }
 
   return (
@@ -287,7 +296,7 @@ export default function BlogPage({ initialPostId, onBack }) {
 
         <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "56px" }}>
           {POSTS.map((post, i) => (
-            <PostCard key={post.id} post={post} index={i} onRead={setActivePost} />
+            <PostCard key={post.id} post={post} index={i} onRead={onOpenPost} />
           ))}
         </div>
       </div>

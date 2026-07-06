@@ -16,6 +16,63 @@ function scrollToHash(hash) {
   history.replaceState(null, "", hash);
 }
 
+// ─── URL routing for /blog and /blog/:id ───────────────────────────────────
+// Real per-post URLs so links are shareable and (via scripts/prerender-blog.js)
+// crawl-able for iMessage/Twitter/Slack link previews.
+const SITE_URL = "https://jaronmobley.com";
+
+function readRouteFromPath() {
+  const path = window.location.pathname.replace(/\/+$/, "") || "/";
+  if (path === "/gallery") return { view: "gallery" };
+  const match = path.match(/^\/blog\/([^/]+)$/);
+  if (match) return { view: "blog", postId: match[1] };
+  if (path === "/blog") return { view: "blog", postId: null };
+  return { view: "home" };
+}
+
+const DEFAULT_META = {
+  title: "Jaron Mobley — Videographer | Palmer, Alaska",
+  description: "Outdoor media, mini-docs, and brand storytelling from the edge of the map. Based in Palmer, Alaska.",
+  image: `${SITE_URL}/og-image.jpg`,
+  url: `${SITE_URL}/`,
+};
+
+function setMeta(name, attr, content) {
+  const el = document.querySelector(`meta[${attr}="${name}"]`);
+  if (el) el.setAttribute("content", content);
+}
+
+// Keeps the document head in sync during client-side navigation (browser tab
+// title, and so the address bar's current URL matches whatever meta a native
+// share sheet would pick up). The crawler-facing previews for shared /blog/:id
+// links come from the pre-rendered static HTML, not this.
+function applyMeta({ title, description, image, url }) {
+  document.title = title;
+  setMeta("description", "name", description);
+  setMeta("og:title", "property", title);
+  setMeta("og:description", "property", description);
+  setMeta("og:image", "property", image);
+  setMeta("og:url", "property", url);
+  setMeta("twitter:title", "name", title);
+  setMeta("twitter:description", "name", description);
+  setMeta("twitter:image", "name", image);
+  const canonical = document.querySelector('link[rel="canonical"]');
+  if (canonical) canonical.setAttribute("href", url);
+}
+
+function metaForPost(post) {
+  const body = (post.body || "").trim().replace(/\s+/g, " ");
+  const description = body
+    ? (body.length > 200 ? body.slice(0, 197).trimEnd() + "…" : body)
+    : `${post.title} — field notes and photos from ${post.location}.`;
+  return {
+    title: `${post.title} — Jaron Mobley`,
+    description,
+    image: `${SITE_URL}${post.heroImage}`,
+    url: `${SITE_URL}/blog/${post.id}`,
+  };
+}
+
 // ─── Global styles injected once ───────────────────────────────────────────
 const GlobalStyles = () => (
   <style>{`
@@ -535,40 +592,75 @@ const GALLERY_PREVIEW_COUNT = 8;
 
 // ─── Root App ─────────────────────────────────────────────────────────────────
 export default function App() {
-  const [blogPostId, setBlogPostId] = useState(null);
-  const [showBlog, setShowBlog] = useState(false);
-  const [showGallery, setShowGallery] = useState(false);
+  const initialRoute = useRef(readRouteFromPath()).current;
+  const [blogPostId, setBlogPostId] = useState(initialRoute.view === "blog" ? initialRoute.postId : null);
+  const [showBlog, setShowBlog] = useState(initialRoute.view === "blog");
+  const [showGallery, setShowGallery] = useState(initialRoute.view === "gallery");
 
-  const openBlog = (postId = null) => {
+  const openBlog = (postId = null, { replace = false } = {}) => {
     setShowGallery(false);
     setShowBlog(true);
     setBlogPostId(postId);
+    const path = postId ? `/blog/${postId}` : "/blog";
+    if (window.location.pathname !== path) {
+      history[replace ? "replaceState" : "pushState"]({ view: "blog", postId }, "", path);
+    }
     window.scrollTo(0, 0);
   };
 
   const closeBlog = () => {
     setShowBlog(false);
     setBlogPostId(null);
+    if (window.location.pathname !== "/") history.pushState({ view: "home" }, "", "/");
     window.scrollTo(0, 0);
   };
 
   const openGallery = () => {
     setShowBlog(false);
     setShowGallery(true);
+    if (window.location.pathname !== "/gallery") history.pushState({ view: "gallery" }, "", "/gallery");
     window.scrollTo(0, 0);
   };
 
   const closeGallery = () => {
     setShowGallery(false);
+    if (window.location.pathname !== "/") history.pushState({ view: "home" }, "", "/");
     window.scrollTo(0, 0);
   };
+
+  // Sync state on browser back/forward.
+  useEffect(() => {
+    const onPopState = () => {
+      const route = readRouteFromPath();
+      setShowBlog(route.view === "blog");
+      setBlogPostId(route.view === "blog" ? route.postId : null);
+      setShowGallery(route.view === "gallery");
+    };
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, []);
+
+  // Keep <head> meta in sync with whatever's on screen (browser tab title,
+  // and native share sheets that read the live DOM rather than the URL).
+  useEffect(() => {
+    if (showBlog && blogPostId) {
+      const post = POSTS.find(p => p.id === blogPostId);
+      applyMeta(post ? metaForPost(post) : DEFAULT_META);
+    } else if (showBlog) {
+      applyMeta({ ...DEFAULT_META, title: "Field Notes — Jaron Mobley", url: `${SITE_URL}/blog` });
+    } else if (showGallery) {
+      applyMeta({ ...DEFAULT_META, title: "Gallery — Jaron Mobley", url: `${SITE_URL}/gallery` });
+    } else {
+      applyMeta(DEFAULT_META);
+    }
+  }, [showBlog, showGallery, blogPostId]);
 
   if (showBlog) {
     return (
       <div style={{ background: "#0A0E12", minHeight: "100vh", fontFamily: "'DM Sans', sans-serif", color: "#EDE8DF", overflowX: "hidden" }}>
         <GlobalStyles />
         <Nav onNav={closeBlog} onFieldNotes={() => openBlog(null)} />
-        <BlogPage initialPostId={blogPostId} onBack={closeBlog} />
+        <BlogPage activePostId={blogPostId} onOpenPost={openBlog} onBack={closeBlog} />
       </div>
     );
   }
