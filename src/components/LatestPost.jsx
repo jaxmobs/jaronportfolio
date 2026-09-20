@@ -16,8 +16,8 @@ export default function LatestPost({ onReadPost }) {
       ref={ref}
       style={{
         padding: "80px 24px",
-        background: "#0D1218",
-        borderTop: "1px solid rgba(196,163,90,0.08)",
+        background: "#EEEAE1",
+        borderTop: "1px solid rgba(28,26,23,0.08)",
       }}
     >
       {/* Section label */}
@@ -28,12 +28,12 @@ export default function LatestPost({ onReadPost }) {
         marginBottom: "36px",
       }}>
         <div style={{
-          fontSize: "9px", letterSpacing: "4px", textTransform: "uppercase",
-          color: "#C4A35A", fontFamily: "'DM Mono', monospace", marginBottom: "10px",
+          fontSize: "13px", letterSpacing: "0.16em", textTransform: "uppercase",
+          color: "#1C1A17", fontFamily: "'EB Garamond', Garamond, Georgia, serif", marginBottom: "10px",
         }}>
           Latest from the Field
         </div>
-        <div style={{ width: "40px", height: "1px", background: "rgba(196,163,90,0.3)" }} />
+        <div style={{ width: "40px", height: "1px", background: "rgba(28,26,23,0.3)" }} />
       </div>
 
       {/* Card */}
@@ -74,8 +74,8 @@ export default function LatestPost({ onReadPost }) {
           {/* Location tag */}
           <div style={{
             position: "absolute", bottom: "14px", left: "16px",
-            fontSize: "9px", letterSpacing: "2.5px", textTransform: "uppercase",
-            color: "#C4A35A", fontFamily: "'DM Mono', monospace",
+            fontSize: "13px", letterSpacing: "0.16em", textTransform: "uppercase",
+            color: "#1C1A17", fontFamily: "'EB Garamond', Garamond, Georgia, serif",
           }}>
             {post.location}
           </div>
@@ -88,17 +88,17 @@ export default function LatestPost({ onReadPost }) {
           transition: "opacity 0.7s ease 0.2s, transform 0.7s ease 0.2s",
         }}>
           <div style={{
-            fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase",
-            color: "#4A5A60", fontFamily: "'DM Mono', monospace", marginBottom: "10px",
+            fontSize: "13px", letterSpacing: "0.16em", textTransform: "uppercase",
+            color: "#9A928A", fontFamily: "'EB Garamond', Garamond, Georgia, serif", marginBottom: "10px",
           }}>
             {post.date} — {post.subtitle}
           </div>
 
           <h3 style={{
-            fontFamily: "-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif",
+            fontFamily: "'EB Garamond', Garamond, Georgia, serif",
             fontSize: "clamp(24px, 6vw, 36px)",
-            fontWeight: 700, lineHeight: 1.15,
-            color: hovered ? "#EDE8DF" : "#C9C2B7",
+            fontWeight: 400, lineHeight: 1.15,
+            color: hovered ? "#1C1A17" : "#57514A",
             marginBottom: "14px",
             transition: "color 0.3s ease",
           }}>
@@ -106,9 +106,9 @@ export default function LatestPost({ onReadPost }) {
           </h3>
 
           <p style={{
-            fontSize: "14px", color: "#7A8A8E",
-            fontFamily: "'DM Sans', sans-serif",
-            lineHeight: 1.75, fontWeight: 300,
+            fontSize: "14px", color: "#7A736B",
+            fontFamily: "'EB Garamond', Garamond, Georgia, serif",
+            lineHeight: 1.75, fontWeight: 400,
             maxWidth: "480px", marginBottom: "20px",
           }}>
             {teaser}
@@ -117,9 +117,9 @@ export default function LatestPost({ onReadPost }) {
           {/* Read link */}
           <div style={{
             display: "inline-flex", alignItems: "center", gap: "8px",
-            fontSize: "10px", letterSpacing: "2.5px", textTransform: "uppercase",
-            color: "#C4A35A", fontFamily: "'DM Mono', monospace",
-            borderBottom: `1px solid ${hovered ? "#C4A35A" : "transparent"}`,
+            fontSize: "13px", letterSpacing: "0.16em", textTransform: "uppercase",
+            color: "#1C1A17", fontFamily: "'EB Garamond', Garamond, Georgia, serif",
+            borderBottom: `1px solid ${hovered ? "#1C1A17" : "transparent"}`,
             paddingBottom: "2px",
             transition: "border-color 0.3s ease",
           }}>
@@ -135,9 +135,9 @@ export default function LatestPost({ onReadPost }) {
           <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginTop: "20px" }}>
             {post.tags.map(t => (
               <span key={t} style={{
-                fontSize: "9px", letterSpacing: "1.5px", textTransform: "uppercase",
-                color: "#4A5A60", fontFamily: "'DM Mono', monospace",
-                border: "1px solid rgba(74,90,96,0.3)", padding: "3px 8px",
+                fontSize: "13px", letterSpacing: "0.16em", textTransform: "uppercase",
+                color: "#9A928A", fontFamily: "'EB Garamond', Garamond, Georgia, serif",
+                border: "1px solid rgba(28,26,23,0.3)", padding: "3px 8px",
               }}>
                 {t}
               </span>

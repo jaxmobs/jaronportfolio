@@ -7,6 +7,7 @@ import BlogPage from "./components/BlogPage.jsx";
 import LatestPost from "./components/LatestPost.jsx";
 import { POSTS } from "./blog.js";
 import GALLERY_COLORS from "./gallery-colors.json";
+import { FONT_FACES } from "./fonts.css.js";
 
 // Smooth-scroll to an in-page section. Used by the nav and the hero CTAs so
 // every in-page link behaves the same (native hash jumps are unreliable here).
@@ -76,16 +77,27 @@ function metaForPost(post) {
 // ─── Global styles injected once ───────────────────────────────────────────
 const GlobalStyles = () => (
   <style>{`
-    @import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,600;1,700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap');
+    ${FONT_FACES}
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
-    body { background: #0A0E12; }
+    body {
+      background: #F4F1EB;
+      font-family: 'EB Garamond', Garamond, Georgia, serif;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
     ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: #0A0E12; }
-    ::-webkit-scrollbar-thumb { background: #C4A35A; border-radius: 2px; }
+    ::-webkit-scrollbar-track { background: #F4F1EB; }
+    ::-webkit-scrollbar-thumb { background: rgba(28,26,23,0.25); border-radius: 2px; }
     a { color: inherit; text-decoration: none; }
-    a:focus-visible, button:focus-visible { outline: 2px solid #C4A35A; outline-offset: 3px; border-radius: 2px; }
-    [role="button"]:focus-visible { outline: 2px solid #C4A35A; outline-offset: 3px; }
+    /* Small caps stand in for the old mono labels — same signalling, no second family. */
+    .label {
+      font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase;
+      color: #9A928A; font-variant-numeric: oldstyle-nums;
+    }
+    .rule { height: 1px; background: rgba(28,26,23,0.14); border: 0; }
+    a:focus-visible, button:focus-visible { outline: 2px solid #1C1A17; outline-offset: 3px; border-radius: 2px; }
+    [role="button"]:focus-visible { outline: 2px solid #1C1A17; outline-offset: 3px; }
     @keyframes scrollPulse { 0%,100%{opacity:0.4} 50%{opacity:1} }
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
@@ -133,11 +145,13 @@ function Nav({ onNav, onFieldNotes }) {
     return () => window.removeEventListener("keydown", onKey);
   }, [menuOpen]);
 
+  // Nav sits in the same serif as everything else, at reading size rather than
+  // shrunk-and-letterspaced — it reads as part of the page, not a UI layer.
   const desktopLink = {
-    fontSize: "11px", letterSpacing: "2.5px", textTransform: "uppercase",
-    color: "#7A8A8E", fontFamily: "'DM Mono', monospace", transition: "color 0.2s",
+    fontSize: "17px", color: "#57514A", fontFamily: "inherit",
+    transition: "color 0.25s",
   };
-  const bar = { width: "22px", height: "2px", background: "#EDE8DF", borderRadius: "1px", display: "block" };
+  const bar = { width: "22px", height: "1px", background: "#1C1A17", display: "block" };
 
   const goTo = (e, hash) => {
     if (e) e.preventDefault();
@@ -154,29 +168,31 @@ function Nav({ onNav, onFieldNotes }) {
     <>
       <nav style={{
         position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
-        padding: "20px 24px",
-        display: "flex", justifyContent: "space-between", alignItems: "center",
-        background: solid ? "rgba(10,14,18,0.97)" : "transparent",
-        borderBottom: solid ? "1px solid rgba(196,163,90,0.12)" : "none",
+        padding: "clamp(18px, 2.4vw, 30px) clamp(24px, 6vw, 72px)",
+        display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "24px",
+        background: "rgba(244,241,235,0.92)",
+        backdropFilter: "saturate(180%) blur(12px)",
+        WebkitBackdropFilter: "saturate(180%) blur(12px)",
+        borderBottom: "none",
         transition: "background 0.4s ease, border-color 0.4s ease",
       }}>
-        <div style={{ fontFamily: "-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif", fontSize: "18px", fontWeight: 700, letterSpacing: "1px", color: "#EDE8DF", whiteSpace: "nowrap" }}>
-          Jaron <span style={{ color: "#C4A35A" }}>Mobley</span>
+        <div style={{ fontSize: "21px", fontWeight: 400, letterSpacing: "0.01em", color: "#1C1A17", whiteSpace: "nowrap" }}>
+          Jaron <em style={{ fontStyle: "italic" }}>Mobley</em>
         </div>
 
         {/* Desktop links */}
         <div className="nav-desktop">
           {links.map(item => (
             <a key={item} href={`#${item.toLowerCase()}`} onClick={(e) => goTo(e, `#${item.toLowerCase()}`)} style={desktopLink}
-              onMouseEnter={e => e.target.style.color = "#C4A35A"}
-              onMouseLeave={e => e.target.style.color = "#7A8A8E"}
+              onMouseEnter={e => e.target.style.color = "#1C1A17"}
+              onMouseLeave={e => e.target.style.color = "#57514A"}
             >
               {item}
             </a>
           ))}
           <button onClick={handleFieldNotes} style={{ ...desktopLink, background: "none", border: "none", cursor: "pointer", padding: 0 }}
-            onMouseEnter={e => e.target.style.color = "#C4A35A"}
-            onMouseLeave={e => e.target.style.color = "#7A8A8E"}
+            onMouseEnter={e => e.target.style.color = "#1C1A17"}
+            onMouseLeave={e => e.target.style.color = "#57514A"}
           >
             Field Notes
           </button>
@@ -196,27 +212,25 @@ function Nav({ onNav, onFieldNotes }) {
           onClick={(e) => { if (e.target === e.currentTarget) setMenuOpen(false); }}
           style={{
             position: "fixed", inset: 0, zIndex: 200,
-            background: "rgba(10,14,18,0.98)",
+            background: "rgba(244,241,235,0.97)",
             display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "30px",
           }}>
           <button onClick={() => setMenuOpen(false)} aria-label="Close menu" style={{
             position: "absolute", top: "22px", right: "24px",
-            background: "none", border: "1px solid rgba(196,163,90,0.3)", color: "#C4A35A",
-            width: "38px", height: "38px", fontSize: "16px", cursor: "pointer",
+            background: "none", border: "none", color: "#1C1A17",
+            width: "38px", height: "38px", fontSize: "20px", cursor: "pointer",
             display: "flex", alignItems: "center", justifyContent: "center",
           }}>✕</button>
           {links.map(item => (
             <a key={item} href={`#${item.toLowerCase()}`} onClick={(e) => goTo(e, `#${item.toLowerCase()}`)} style={{
-              fontSize: "17px", letterSpacing: "3px", textTransform: "uppercase",
-              color: "#EDE8DF", fontFamily: "'DM Mono', monospace",
+              fontSize: "28px", color: "#1C1A17", fontFamily: "inherit",
             }}>
               {item}
             </a>
           ))}
           <button onClick={handleFieldNotes} style={{
             background: "none", border: "none", cursor: "pointer",
-            fontSize: "17px", letterSpacing: "3px", textTransform: "uppercase",
-            color: "#EDE8DF", fontFamily: "'DM Mono', monospace",
+            fontSize: "28px", color: "#1C1A17", fontFamily: "inherit",
           }}>
             Field Notes
           </button>
@@ -260,12 +274,12 @@ function Hero() {
   });
 
   return (
-    <section style={{ position: "relative", height: "100svh", display: "flex", flexDirection: "column", justifyContent: "flex-end", overflow: "hidden" }}>
-      {/* BG Video — scroll-reactive parallax, fade, and scale */}
+    <section style={{ paddingTop: "clamp(62px, 7vw, 92px)" }}>
+      {/* The footage runs as a clean band, starting below the masthead so the
+          navigation always sits on paper and never fights the grade. */}
       <div ref={fadeRef} style={{
-        position: "absolute", inset: 0, overflow: "hidden",
-        opacity: 1,
-        filter: "brightness(0.9)",
+        position: "relative", height: "min(58svh, 620px)", overflow: "hidden",
+        background: "#EEEAE1",
       }}>
         <div ref={scaleRef} className="hero-video-wrap" style={{
           position: "absolute", inset: "-10%",
@@ -274,18 +288,15 @@ function Hero() {
         }}>
           <video
             src="/hero-video.mp4"
+            poster="/og-image.jpg"
+            preload="metadata"
             autoPlay
             muted
             loop
             playsInline
             style={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              width: "100vw",
-              height: "56.25vw",
-              minWidth: "177.78vh",
-              minHeight: "100vh",
+              position: "absolute", top: "50%", left: "50%",
+              width: "100%", height: "100%", minWidth: "177.78vh",
               objectFit: "cover",
               transform: "translate(-50%, -50%)",
               pointerEvents: "none",
@@ -293,79 +304,104 @@ function Hero() {
           />
         </div>
         <img className="hero-image" src="/og-image.jpg" alt="" aria-hidden="true" />
-      </div>
-      {/* Gradient */}
-      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, #0A0E12 0%, rgba(10,14,18,0.2) 50%, rgba(10,14,18,0.4) 100%)" }} />
 
-      {/* Coordinates */}
-      <div className="hero-coords" style={{
-        position: "absolute", top: "50%", right: "24px",
-        transform: "translateY(-50%) rotate(90deg)",
-        fontSize: "9px", letterSpacing: "3px", color: "rgba(196,163,90,0.5)",
-        fontFamily: "'DM Mono', monospace",
-        ...show(1.0),
+        {/* Just enough paper at top and bottom to seat the nav and dissolve
+            the lower edge into the page. */}
+        <div style={{
+          position: "absolute", inset: 0, pointerEvents: "none",
+          background: "linear-gradient(to bottom, rgba(244,241,235,0) 78%, #F4F1EB 100%)",
+        }} />
+      </div>
+
+      {/* The line lands on paper, where it can be set properly. */}
+      <div style={{
+        padding: "clamp(36px, 5vw, 64px) clamp(24px, 6vw, 72px) clamp(24px, 4vw, 56px)",
+        maxWidth: "1180px", margin: "0 auto",
       }}>
-        61.5996° N / 149.1200° W
-      </div>
-
-      {/* Text */}
-      <div style={{ position: "relative", padding: "0 24px 60px" }}>
-        <div style={{ fontSize: "10px", letterSpacing: "4px", textTransform: "uppercase", color: "#C4A35A", fontFamily: "'DM Mono', monospace", marginBottom: "16px", ...show(0.3) }}>
-          Videographer — Palmer, Alaska
-        </div>
-        <h1 style={{ fontFamily: "-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif", fontSize: "clamp(42px, 10vw, 86px)", fontWeight: 900, lineHeight: 0.95, color: "#EDE8DF", ...show(0.5) }}>
-          Stories from<br />
-          <em style={{ color: "#C4A35A" }}>the edge</em><br />
-          of the map.
+        <h1 style={{
+          fontSize: "clamp(40px, 7.2vw, 96px)",
+          fontWeight: 400, lineHeight: 1.04, letterSpacing: "-0.018em",
+          color: "#1C1A17", maxWidth: "13em",
+          ...show(0.2),
+        }}>
+          Stories from <em style={{ fontStyle: "italic" }}>the edge</em> of the map.
         </h1>
-        <p style={{ marginTop: "24px", fontSize: "14px", color: "#8FA99A", fontWeight: 300, maxWidth: "340px", lineHeight: 1.7, ...show(0.8) }}>
-          Outdoor media, mini-docs, and brand storytelling — shot in the wild corners of Alaska.
+        <p style={{
+          marginTop: "clamp(22px, 3vw, 36px)", fontSize: "clamp(17px, 1.5vw, 21px)",
+          color: "#57514A", lineHeight: 1.62, maxWidth: "30em",
+          ...show(0.4),
+        }}>
+          Outdoor media, mini-documentaries and brand storytelling, shot in the
+          wild corners of Alaska.
         </p>
-        <div style={{ marginTop: "36px", display: "flex", gap: "16px", alignItems: "center", ...show(1.0) }}>
-          <a href="#work" onClick={(e) => { e.preventDefault(); scrollToHash("#work"); }} style={{ padding: "12px 28px", background: "#C4A35A", color: "#0A0E12", fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", fontFamily: "'DM Mono', monospace", fontWeight: 500 }}>
-            View Work
-          </a>
-          <a href="#about" onClick={(e) => { e.preventDefault(); scrollToHash("#about"); }} style={{ fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", color: "#7A8A8E", fontFamily: "'DM Mono', monospace" }}>
-            About ↓
-          </a>
-        </div>
-      </div>
-
-      {/* Scroll indicator */}
-      <div style={{ position: "absolute", bottom: "24px", left: "50%", transform: "translateX(-50%)", display: "flex", flexDirection: "column", alignItems: "center", ...show(1.5), opacity: loaded ? 0.5 : 0 }}>
-        <div style={{ width: "1px", height: "40px", background: "linear-gradient(to bottom, transparent, #C4A35A)", animation: "scrollPulse 2s ease-in-out infinite" }} />
       </div>
     </section>
   );
 }
 
-// ─── Stats bar ───────────────────────────────────────────────────────────────
+// ─── Shared section furniture ────────────────────────────────────────────────
+// Sections are separated by space alone — no rules, no background blocks — so
+// the page reads as one continuous sheet and the photographs carry the contrast.
+const SECTION_Y = "clamp(96px, 14vw, 176px)";
+const GUTTER = "clamp(24px, 6vw, 72px)";
+
+function Section({ id, children, tint = false, style }) {
+  return (
+    <section id={id} style={{
+      padding: `${SECTION_Y} ${GUTTER}`,
+      background: tint ? "#EEEAE1" : "transparent",
+      ...style,
+    }}>
+      <div style={{ maxWidth: "1180px", margin: "0 auto" }}>{children}</div>
+    </section>
+  );
+}
+
+// Eyebrow + display heading. The eyebrow is small caps rather than the old
+// letterspaced mono, so the whole page stays in one voice.
+function SectionHead({ eyebrow, children, style }) {
+  return (
+    <div style={{ marginBottom: "clamp(40px, 6vw, 72px)", ...style }}>
+      {eyebrow && (
+        <div style={{
+          fontSize: "13px", letterSpacing: "0.16em", textTransform: "uppercase",
+          color: "#9A928A", marginBottom: "18px",
+        }}>
+          {eyebrow}
+        </div>
+      )}
+      <h2 style={{
+        fontSize: "clamp(32px, 5vw, 60px)", fontWeight: 400,
+        lineHeight: 1.08, letterSpacing: "-0.012em", color: "#1C1A17",
+      }}>
+        {children}
+      </h2>
+    </div>
+  );
+}
+
+// ─── Epigraph ────────────────────────────────────────────────────────────────
 function StatsBar() {
   return (
-    <section style={{ borderTop: "1px solid rgba(196,163,90,0.12)", borderBottom: "1px solid rgba(196,163,90,0.12)", padding: "40px 24px" }}>
+    <Section>
       <FadeIn>
-        <div style={{ maxWidth: "560px" }}>
-          <div style={{ width: "32px", height: "2px", background: "#C4A35A", marginBottom: "20px" }} />
-          <p style={{
-            fontFamily: "-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif",
-            fontSize: "clamp(16px, 4vw, 22px)",
-            fontStyle: "italic",
-            fontWeight: 700,
-            color: "#EDE8DF",
-            lineHeight: 1.45,
-            marginBottom: "16px",
+        <figure style={{ maxWidth: "24em", margin: "0 auto", textAlign: "center" }}>
+          <blockquote style={{
+            fontSize: "clamp(22px, 3vw, 34px)",
+            fontStyle: "italic", fontWeight: 400,
+            color: "#1C1A17", lineHeight: 1.38, letterSpacing: "-0.005em",
           }}>
-            "To see the world, things dangerous to come to, to see behind walls, draw closer, to find each other and to feel. That is the purpose of life."
-          </p>
-          <div style={{ fontSize: "9px", letterSpacing: "3px", textTransform: "uppercase", color: "#C4A35A", fontFamily: "'DM Mono', monospace", marginBottom: "6px" }}>
+            “To see the world, things dangerous to come to, to see behind walls,
+            draw closer, to find each other and to feel. That is the purpose of life.”
+          </blockquote>
+          <figcaption style={{ marginTop: "28px", fontSize: "15px", color: "#9A928A", lineHeight: 1.7 }}>
             The Secret Life of Walter Mitty
-          </div>
-          <div style={{ fontSize: "9px", letterSpacing: "3px", textTransform: "uppercase", color: "#4A5A60", fontFamily: "'DM Mono', monospace" }}>
-            Palmer, Alaska Based
-          </div>
-        </div>
+            <br />
+            <span style={{ fontStyle: "italic" }}>Palmer, Alaska</span>
+          </figcaption>
+        </figure>
       </FadeIn>
-    </section>
+    </Section>
   );
 }
 
@@ -375,28 +411,25 @@ function WorkSection() {
   const filtered = activeFilter === "all" ? PROJECTS : PROJECTS.filter(p => p.tags.includes(activeFilter));
 
   return (
-    <section id="work" style={{ padding: "80px 24px" }}>
+    <Section id="work">
       <FadeIn>
-        <div style={{ marginBottom: "48px" }}>
-          <div style={{ fontSize: "9px", letterSpacing: "4px", textTransform: "uppercase", color: "#C4A35A", fontFamily: "'DM Mono', monospace", marginBottom: "12px" }}>
-            Selected Work
-          </div>
-          <h2 style={{ fontFamily: "-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif", fontSize: "clamp(32px, 8vw, 52px)", fontWeight: 700, lineHeight: 1.1, color: "#EDE8DF" }}>
-            The reel.
-          </h2>
-        </div>
+        <SectionHead eyebrow="Selected work">
+          The <em style={{ fontStyle: "italic" }}>reel</em>.
+        </SectionHead>
       </FadeIn>
 
+      {/* Filters as plain text — an underline marks the active one, no pills. */}
       <FadeIn delay={0.1}>
-        <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "40px" }}>
+        <div style={{ display: "flex", gap: "28px", flexWrap: "wrap", marginBottom: "clamp(44px, 6vw, 72px)" }}>
           {FILTERS.map(f => (
             <button key={f} onClick={() => setActiveFilter(f)} style={{
-              padding: "6px 14px",
-              border: `1px solid ${activeFilter === f ? "#C4A35A" : "rgba(196,163,90,0.2)"}`,
-              background: activeFilter === f ? "rgba(196,163,90,0.1)" : "transparent",
-              color: activeFilter === f ? "#C4A35A" : "#7A8A8E",
-              fontSize: "9px", letterSpacing: "2px", textTransform: "uppercase",
-              fontFamily: "'DM Mono', monospace", cursor: "pointer", transition: "all 0.2s",
+              padding: "2px 0",
+              border: "none", background: "none", cursor: "pointer",
+              fontFamily: "inherit", fontSize: "17px",
+              color: activeFilter === f ? "#1C1A17" : "#9A928A",
+              fontStyle: activeFilter === f ? "italic" : "normal",
+              borderBottom: `1px solid ${activeFilter === f ? "#1C1A17" : "transparent"}`,
+              transition: "color 0.25s, border-color 0.25s",
             }}>
               {f}
             </button>
@@ -404,157 +437,123 @@ function WorkSection() {
         </div>
       </FadeIn>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "48px", maxWidth: "1280px", margin: "0 auto" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "clamp(64px, 9vw, 128px)" }}>
         {filtered.map((project, i) => (
           <ProjectCard key={project.id} project={project} index={i} />
         ))}
       </div>
-    </section>
+    </Section>
   );
 }
 
-// ─── About section ───────────────────────────────────────────────────────────
+// ─── About ───────────────────────────────────────────────────────────────────
 function AboutSection() {
   return (
-    <section id="about" style={{ padding: "80px 24px", background: "#0D1218", borderTop: "1px solid rgba(196,163,90,0.08)" }}>
-      <FadeIn>
-        <div style={{ fontSize: "9px", letterSpacing: "4px", textTransform: "uppercase", color: "#C4A35A", fontFamily: "'DM Mono', monospace", marginBottom: "12px" }}>
-          About
-        </div>
-        <h2 style={{ fontFamily: "-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif", fontSize: "clamp(32px, 8vw, 48px)", fontWeight: 700, lineHeight: 1.1, marginBottom: "28px", color: "#EDE8DF" }}>
-          Built for the<br /><em style={{ color: "#C4A35A" }}>field.</em>
-        </h2>
-      </FadeIn>
+    <Section id="about" tint>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 330px), 1fr))", gap: "clamp(40px, 6vw, 96px)" }}>
+        <FadeIn>
+          <SectionHead eyebrow="About" style={{ marginBottom: 0 }}>
+            Built for the <em style={{ fontStyle: "italic" }}>field</em>.
+          </SectionHead>
+        </FadeIn>
 
-      <FadeIn delay={0.15}>
-        <p style={{ fontSize: "15px", color: "#8FA99A", lineHeight: 1.8, maxWidth: "420px", fontWeight: 300, marginBottom: "20px" }}>
-          Freelance videographer based in Palmer, Alaska. I make outdoor media, mini-documentaries, and brand films for companies and organizations operating at the edge of the last frontier.
-        </p>
-        <p style={{ fontSize: "15px", color: "#8FA99A", lineHeight: 1.8, maxWidth: "420px", fontWeight: 300, marginBottom: "40px" }}>
-          Years of shooting in extreme conditions, from -40°F winters to peak summer alpine. Available nights and weekends.
-        </p>
-      </FadeIn>
+        <FadeIn delay={0.12}>
+          <div>
+            <p style={{ fontSize: "clamp(17px, 1.4vw, 20px)", color: "#57514A", lineHeight: 1.68, marginBottom: "1.2em" }}>
+              Freelance videographer based in Palmer, Alaska. I make outdoor media,
+              mini-documentaries and brand films for companies and organizations
+              operating at the edge of the last frontier.
+            </p>
+            <p style={{ fontSize: "clamp(17px, 1.4vw, 20px)", color: "#57514A", lineHeight: 1.68, marginBottom: "2.2em" }}>
+              Years of shooting in extreme conditions, from −40°F winters to peak
+              summer alpine. Available nights and weekends.
+            </p>
 
-      <FadeIn delay={0.2}>
-        <ul style={{ maxWidth: "360px", listStyle: "none", padding: 0, margin: 0 }}>
-          {SKILLS.map((s) => (
-            <li key={s} style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "16px" }}>
-              <span style={{ width: "6px", height: "6px", background: "#C4A35A", borderRadius: "50%", flexShrink: 0 }} />
-              <span style={{ fontSize: "14px", letterSpacing: "1.5px", textTransform: "uppercase", color: "#EDE8DF", fontFamily: "'DM Mono', monospace" }}>
-                {s}
-              </span>
-            </li>
-          ))}
-        </ul>
-      </FadeIn>
+            {/* Capabilities as a plain running list — no bullets, no chips. */}
+            <ul style={{ listStyle: "none", padding: 0, margin: 0, columns: 2, columnGap: "32px" }}>
+              {SKILLS.map((s) => (
+                <li key={s} style={{ fontSize: "17px", color: "#1C1A17", lineHeight: 2, breakInside: "avoid" }}>
+                  {s}
+                </li>
+              ))}
+            </ul>
 
-      {/* Ansel Adams */}
-      <FadeIn delay={0.25}>
-        <div style={{ marginTop: "44px", borderLeft: "2px solid rgba(196,163,90,0.3)", paddingLeft: "20px" }}>
-          <div style={{ fontSize: "9px", letterSpacing: "3px", color: "#C4A35A", fontFamily: "'DM Mono', monospace", textTransform: "uppercase", marginBottom: "10px" }}>
-            Influence
+            <figure style={{ margin: "clamp(44px, 6vw, 72px) 0 0", maxWidth: "30em" }}>
+              <blockquote style={{ fontSize: "clamp(19px, 1.8vw, 24px)", fontStyle: "italic", color: "#1C1A17", lineHeight: 1.5 }}>
+                “You don't take a photograph, you make it.”
+              </blockquote>
+              <figcaption style={{ marginTop: "14px", fontSize: "15px", color: "#9A928A" }}>
+                Ansel Adams — every frame is a decision, not a capture.
+              </figcaption>
+            </figure>
           </div>
-          <p style={{ fontFamily: "-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif", fontSize: "16px", fontStyle: "italic", color: "#8FA99A", lineHeight: 1.6, maxWidth: "360px" }}>
-            "You don't take a photograph, you make it."
-          </p>
-          <div style={{ marginTop: "8px", fontSize: "10px", letterSpacing: "2px", color: "#4A5A60", fontFamily: "'DM Mono', monospace", textTransform: "uppercase" }}>
-            — Ansel Adams
-          </div>
-          <p style={{ marginTop: "12px", fontSize: "13px", color: "#4A5A60", lineHeight: 1.7, maxWidth: "340px", fontWeight: 300 }}>
-            Adams taught that every frame is a decision, not a capture. That philosophy lives in every shot I take in the field.
-          </p>
-        </div>
-      </FadeIn>
-    </section>
+        </FadeIn>
+      </div>
+    </Section>
   );
 }
 
-// ─── Personal quote ───────────────────────────────────────────────────────────
+// ─── Personal quote ──────────────────────────────────────────────────────────
 function QuoteSection() {
   return (
-    <section style={{ padding: "80px 24px", position: "relative", overflow: "hidden" }}>
-      <div style={{
-        position: "absolute", top: "50%", left: "50%",
-        transform: "translate(-50%, -50%)",
-        fontSize: "clamp(80px, 30vw, 200px)", fontFamily: "-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif",
-        color: "rgba(196,163,90,0.04)", lineHeight: 1, userSelect: "none", whiteSpace: "nowrap",
-      }}>
-        ALASKA
-      </div>
+    <Section>
       <FadeIn>
-        <blockquote style={{ position: "relative", zIndex: 1, maxWidth: "640px", margin: "0 auto", textAlign: "center" }}>
-          <div style={{ width: "40px", height: "2px", background: "#C4A35A", margin: "0 auto 24px" }} />
-          <p style={{
-            fontFamily: "-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif",
-            fontSize: "clamp(22px, 6vw, 36px)",
-            fontWeight: 700, lineHeight: 1.3, fontStyle: "italic",
-            color: "#EDE8DF", maxWidth: "560px", margin: "0 auto",
+        <figure style={{ maxWidth: "22em", margin: "0 auto", textAlign: "center" }}>
+          <blockquote style={{
+            fontSize: "clamp(26px, 4vw, 46px)", fontWeight: 400, fontStyle: "italic",
+            lineHeight: 1.3, letterSpacing: "-0.01em", color: "#1C1A17",
           }}>
-            "The camera isn't a technological advancement. It's a tool for understanding and experiencing humanity at its fullest."
-          </p>
-          <footer style={{ marginTop: "20px", fontSize: "10px", letterSpacing: "3px", color: "#C4A35A", fontFamily: "'DM Mono', monospace", textTransform: "uppercase" }}>
-            — Jaron Mobley
-          </footer>
-        </blockquote>
+            “The camera isn't a technological advancement. It's a tool for
+            understanding and experiencing humanity at its fullest.”
+          </blockquote>
+          <figcaption style={{ marginTop: "32px", fontSize: "15px", letterSpacing: "0.16em", textTransform: "uppercase", color: "#9A928A" }}>
+            Jaron Mobley
+          </figcaption>
+        </figure>
       </FadeIn>
-    </section>
+    </Section>
   );
 }
 
-// ─── Contact section ──────────────────────────────────────────────────────────
+// ─── Contact ─────────────────────────────────────────────────────────────────
 function ContactSection() {
   // ─ Update your email and Instagram handle here ─
   const EMAIL = "jaronmobley@gmail.com";
   const INSTAGRAM = "@jaronmobley.mp4";
   const INSTAGRAM_URL = "https://instagram.com/jaronmobley.mp4";
 
-  const linkStyle = {
-    display: "flex", alignItems: "center", justifyContent: "space-between",
-    padding: "18px 20px",
-    border: "1px solid rgba(196,163,90,0.2)",
-    transition: "border-color 0.2s, background 0.2s",
+  // Set large and underlined — the address itself is the button.
+  const addr = {
+    display: "inline-block",
+    fontSize: "clamp(22px, 3vw, 38px)", color: "#1C1A17", lineHeight: 1.35,
+    borderBottom: "1px solid rgba(28,26,23,0.25)", paddingBottom: "3px",
+    transition: "border-color 0.3s ease",
   };
+  const hover = (on) => (e) => { e.currentTarget.style.borderColor = on ? "#1C1A17" : "rgba(28,26,23,0.25)"; };
 
   return (
-    <section id="contact" style={{ padding: "80px 24px 100px", background: "#0D1218", borderTop: "1px solid rgba(196,163,90,0.08)" }}>
+    <Section id="contact" tint>
       <FadeIn>
-        <div style={{ fontSize: "9px", letterSpacing: "4px", textTransform: "uppercase", color: "#C4A35A", fontFamily: "'DM Mono', monospace", marginBottom: "12px" }}>
-          Contact
-        </div>
-        <h2 style={{ fontFamily: "-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif", fontSize: "clamp(32px, 8vw, 52px)", fontWeight: 700, lineHeight: 1.1, marginBottom: "16px", color: "#EDE8DF" }}>
-          Let's make<br /><em style={{ color: "#C4A35A" }}>something.</em>
-        </h2>
-        <p style={{ fontSize: "14px", color: "#7A8A8E", lineHeight: 1.7, maxWidth: "340px", marginBottom: "40px", fontWeight: 300 }}>
-          Booking outdoor, documentary, and brand projects across Alaska. Reach out to start a conversation.
+        <SectionHead eyebrow="Contact">
+          Let's make <em style={{ fontStyle: "italic" }}>something</em>.
+        </SectionHead>
+        <p style={{ fontSize: "clamp(17px, 1.4vw, 20px)", color: "#57514A", lineHeight: 1.68, maxWidth: "28em", marginBottom: "clamp(40px, 5vw, 64px)" }}>
+          Booking outdoor, documentary and brand projects across Alaska.
+          Reach out to start a conversation.
         </p>
       </FadeIn>
 
-      <FadeIn delay={0.15}>
-        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-          <a href={`mailto:${EMAIL}`} style={linkStyle}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = "#C4A35A"; e.currentTarget.style.background = "rgba(196,163,90,0.05)"; }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(196,163,90,0.2)"; e.currentTarget.style.background = "transparent"; }}
-          >
-            <div>
-              <div style={{ fontSize: "9px", letterSpacing: "2px", color: "#7A8A8E", fontFamily: "'DM Mono', monospace", textTransform: "uppercase", marginBottom: "4px" }}>Email</div>
-              <div style={{ fontSize: "14px", color: "#EDE8DF" }}>{EMAIL}</div>
-            </div>
-            <span style={{ color: "#C4A35A", fontSize: "20px" }}>→</span>
+      <FadeIn delay={0.12}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "clamp(24px, 3vw, 40px)", alignItems: "flex-start" }}>
+          <a href={`mailto:${EMAIL}`} style={addr} onMouseEnter={hover(true)} onMouseLeave={hover(false)}>
+            {EMAIL}
           </a>
-
-          <a href={INSTAGRAM_URL} target="_blank" rel="noreferrer" style={linkStyle}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = "#C4A35A"; e.currentTarget.style.background = "rgba(196,163,90,0.05)"; }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(196,163,90,0.2)"; e.currentTarget.style.background = "transparent"; }}
-          >
-            <div>
-              <div style={{ fontSize: "9px", letterSpacing: "2px", color: "#7A8A8E", fontFamily: "'DM Mono', monospace", textTransform: "uppercase", marginBottom: "4px" }}>Instagram</div>
-              <div style={{ fontSize: "14px", color: "#EDE8DF" }}>{INSTAGRAM}</div>
-            </div>
-            <span style={{ color: "#C4A35A", fontSize: "20px" }}>→</span>
+          <a href={INSTAGRAM_URL} target="_blank" rel="noreferrer" style={addr} onMouseEnter={hover(true)} onMouseLeave={hover(false)}>
+            {INSTAGRAM}
           </a>
         </div>
       </FadeIn>
-    </section>
+    </Section>
   );
 }
 
@@ -657,7 +656,7 @@ export default function App() {
 
   if (showBlog) {
     return (
-      <div style={{ background: "#0A0E12", minHeight: "100vh", fontFamily: "'DM Sans', sans-serif", color: "#EDE8DF", overflowX: "hidden" }}>
+      <div style={{ background: "#F4F1EB", minHeight: "100vh", fontFamily: "'EB Garamond', Garamond, Georgia, serif", color: "#1C1A17", overflowX: "hidden" }}>
         <GlobalStyles />
         <Nav onNav={closeBlog} onFieldNotes={() => openBlog(null)} />
         <BlogPage activePostId={blogPostId} onOpenPost={openBlog} onBack={closeBlog} />
@@ -667,20 +666,24 @@ export default function App() {
 
   if (showGallery) {
     return (
-      <div style={{ background: "#0A0E12", minHeight: "100vh", fontFamily: "'DM Sans', sans-serif", color: "#EDE8DF", overflowX: "hidden" }}>
+      <div style={{ background: "#F4F1EB", minHeight: "100vh", fontFamily: "'EB Garamond', Garamond, Georgia, serif", color: "#1C1A17", overflowX: "hidden" }}>
         <GlobalStyles />
         <Nav onNav={closeGallery} onFieldNotes={() => openBlog(null)} />
         <GallerySection items={GALLERY_SORTED} asPage onBack={closeGallery} />
-        <footer style={{ padding: "24px", borderTop: "1px solid rgba(196,163,90,0.08)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <div style={{ fontFamily: "-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif", fontSize: "14px", color: "#3A4A50" }}>Jaron Mobley</div>
-          <div style={{ fontSize: "9px", letterSpacing: "2px", color: "#3A4A50", fontFamily: "'DM Mono', monospace" }}>© 2025 — Palmer, AK</div>
+        <footer style={{
+          padding: "clamp(40px, 5vw, 64px) clamp(24px, 6vw, 72px)",
+          display: "flex", justifyContent: "space-between", alignItems: "baseline",
+          flexWrap: "wrap", gap: "12px", background: "#EEEAE1",
+        }}>
+          <div style={{ fontSize: "17px", color: "#9A928A" }}>Jaron <em style={{ fontStyle: "italic" }}>Mobley</em></div>
+          <div style={{ fontSize: "15px", color: "#B5ADA3" }}>© 2025 · Palmer, Alaska</div>
         </footer>
       </div>
     );
   }
 
   return (
-    <div style={{ background: "#0A0E12", minHeight: "100vh", fontFamily: "'DM Sans', sans-serif", color: "#EDE8DF", overflowX: "hidden" }}>
+    <div style={{ background: "#F4F1EB", minHeight: "100vh", fontFamily: "'EB Garamond', Garamond, Georgia, serif", color: "#1C1A17", overflowX: "hidden" }}>
       <GlobalStyles />
       <Nav onNav={null} onFieldNotes={() => openBlog(null)} />
       <Hero />
@@ -691,9 +694,13 @@ export default function App() {
       <AboutSection />
       <QuoteSection />
       <ContactSection />
-      <footer style={{ padding: "24px", borderTop: "1px solid rgba(196,163,90,0.08)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <div style={{ fontFamily: "-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif", fontSize: "14px", color: "#3A4A50" }}>Jaron Mobley</div>
-        <div style={{ fontSize: "9px", letterSpacing: "2px", color: "#3A4A50", fontFamily: "'DM Mono', monospace" }}>© 2025 — Palmer, AK</div>
+      <footer style={{
+        padding: "clamp(40px, 5vw, 64px) clamp(24px, 6vw, 72px)",
+        display: "flex", justifyContent: "space-between", alignItems: "baseline",
+        flexWrap: "wrap", gap: "12px",
+      }}>
+        <div style={{ fontSize: "17px", color: "#9A928A" }}>Jaron <em style={{ fontStyle: "italic" }}>Mobley</em></div>
+        <div style={{ fontSize: "15px", color: "#B5ADA3" }}>© 2025 · Palmer, Alaska</div>
       </footer>
     </div>
   );

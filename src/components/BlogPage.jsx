@@ -24,59 +24,58 @@ function PostView({ post, onBack }) {
           onClick={onBack}
           style={{
             background: "none", border: "none", cursor: "pointer",
-            fontSize: "10px", letterSpacing: "2.5px", textTransform: "uppercase",
-            color: "#7A8A8E", fontFamily: "'DM Mono', monospace",
+            fontSize: "13px", letterSpacing: "0.16em", textTransform: "uppercase",
+            color: "#7A736B", fontFamily: "'EB Garamond', Garamond, Georgia, serif",
             display: "flex", alignItems: "center", gap: "8px", padding: 0,
           }}
-          onMouseEnter={e => e.currentTarget.style.color = "#C4A35A"}
-          onMouseLeave={e => e.currentTarget.style.color = "#7A8A8E"}
+          onMouseEnter={e => e.currentTarget.style.color = "#1C1A17"}
+          onMouseLeave={e => e.currentTarget.style.color = "#7A736B"}
         >
           ← Field Notes
         </button>
       </div>
 
-      {/* Hero */}
-      <div style={{ margin: "28px 0 0", position: "relative", overflow: "hidden", aspectRatio: "3/2" }}>
+      {/* Hero — the photograph is left ungraded and uncovered; the title is set
+          beneath it on paper rather than burned into the frame. */}
+      <div style={{ margin: "28px 0 0", overflow: "hidden", aspectRatio: "3/2", background: "#EEEAE1" }}>
         <img
           src={post.heroImage}
           alt={post.title}
-          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", filter: "brightness(0.75)" }}
+          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
         />
-        <div style={{
-          position: "absolute", inset: 0,
-          background: "linear-gradient(to top, rgba(10,14,18,1) 0%, rgba(10,14,18,0.1) 60%)",
-        }} />
-        <div style={{ position: "absolute", bottom: "24px", left: "24px", right: "24px" }}>
-          <div style={{
-            fontSize: "9px", letterSpacing: "3px", textTransform: "uppercase",
-            color: "#C4A35A", fontFamily: "'DM Mono', monospace", marginBottom: "10px",
-          }}>
-            {post.date} — {post.location}
-          </div>
-          <h1 style={{
-            fontFamily: "-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif",
-            fontSize: "clamp(28px, 8vw, 52px)",
-            fontWeight: 900, lineHeight: 1.05, color: "#EDE8DF",
-          }}>
-            {post.title}
-          </h1>
-          <div style={{
-            marginTop: "6px", fontSize: "14px", fontStyle: "italic",
-            fontFamily: "-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif", color: "#8FA99A",
-          }}>
-            {post.subtitle}
-          </div>
-        </div>
       </div>
 
+      <header style={{
+        padding: "clamp(36px, 5vw, 60px) clamp(24px, 6vw, 72px) 0",
+        maxWidth: "1180px", margin: "0 auto",
+      }}>
+        <div style={{
+          fontSize: "13px", letterSpacing: "0.16em", textTransform: "uppercase",
+          color: "#9A928A", marginBottom: "18px",
+        }}>
+          {post.date} · {post.location}
+        </div>
+        <h1 style={{
+          fontSize: "clamp(32px, 5.4vw, 64px)",
+          fontWeight: 400, lineHeight: 1.06, letterSpacing: "-0.015em",
+          color: "#1C1A17", maxWidth: "16em",
+        }}>
+          {post.title}
+        </h1>
+        {post.subtitle && (
+          <div style={{ marginTop: "14px", fontSize: "19px", fontStyle: "italic", color: "#9A928A" }}>
+            {post.subtitle}
+          </div>
+        )}
+      </header>
+
       {/* Body */}
-      <div style={{ padding: "40px 24px 80px" }}>
+      <div style={{ padding: "clamp(32px, 4vw, 48px) clamp(24px, 6vw, 72px) clamp(72px, 10vw, 120px)", maxWidth: "1180px", margin: "0 auto" }}>
         {paragraphs.map((para, i) => (
           <div key={i}>
             <p style={{
-              fontSize: "16px", color: "#8FA99A", lineHeight: 1.85,
-              fontFamily: "'DM Sans', sans-serif", fontWeight: 300,
-              maxWidth: "600px", marginBottom: "28px",
+              fontSize: "clamp(18px, 1.5vw, 21px)", color: "#57514A", lineHeight: 1.72,
+              fontWeight: 400, maxWidth: "34em", marginBottom: "1.5em",
             }}>
               {para}
             </p>
@@ -105,13 +104,6 @@ function PostView({ post, onBack }) {
                   onMouseEnter={e => e.target.style.transform = "scale(1.03)"}
                   onMouseLeave={e => e.target.style.transform = "scale(1)"}
                 />
-                <div style={{
-                  position: "absolute", bottom: "10px", right: "12px",
-                  fontSize: "9px", letterSpacing: "2px", color: "rgba(196,163,90,0.6)",
-                  fontFamily: "'DM Mono', monospace",
-                }}>
-                  X-T3
-                </div>
               </div>
             )}
           </div>
@@ -121,12 +113,12 @@ function PostView({ post, onBack }) {
         {post.images.length > gridStart && (
           <>
             <div style={{
-              fontSize: "9px", letterSpacing: "3px", textTransform: "uppercase",
-              color: "#4A5A60", fontFamily: "'DM Mono', monospace", marginBottom: "14px",
+              fontSize: "13px", letterSpacing: "0.16em", textTransform: "uppercase",
+              color: "#9A928A", fontFamily: "'EB Garamond', Garamond, Georgia, serif", marginBottom: "14px",
             }}>
               More from the day
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px", marginBottom: "40px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 300px), 1fr))", gap: "clamp(12px, 1.6vw, 22px)", marginBottom: "clamp(44px, 6vw, 72px)" }}>
               {post.images.slice(gridStart).map((img, i) => (
                 <div
                   key={i}
@@ -148,12 +140,10 @@ function PostView({ post, onBack }) {
         )}
 
         {/* Tags */}
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", paddingTop: "8px", borderTop: "1px solid rgba(196,163,90,0.1)" }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "22px", paddingTop: "26px", borderTop: "1px solid rgba(28,26,23,0.12)" }}>
           {post.tags.map(t => (
             <span key={t} style={{
-              fontSize: "9px", letterSpacing: "1.5px", textTransform: "uppercase",
-              color: "#4A5A60", fontFamily: "'DM Mono', monospace",
-              border: "1px solid rgba(74,90,96,0.3)", padding: "3px 8px",
+              fontSize: "16px", color: "#9A928A", fontStyle: "italic",
             }}>
               {t}
             </span>
@@ -179,8 +169,8 @@ function PostView({ post, onBack }) {
           />
           <button onClick={() => setLightbox(null)} style={{
             position: "absolute", top: "20px", right: "20px",
-            background: "none", border: "1px solid rgba(196,163,90,0.3)",
-            color: "#C4A35A", cursor: "pointer", width: "32px", height: "32px",
+            background: "none", border: "none",
+            color: "#F4F1EB", cursor: "pointer", width: "40px", height: "40px",
             fontSize: "16px", display: "flex", alignItems: "center", justifyContent: "center",
           }}>✕</button>
         </div>
@@ -228,21 +218,21 @@ function PostCard({ post, onRead, index }) {
           position: "absolute", inset: 0,
           background: "linear-gradient(to top, rgba(10,14,18,0.7) 0%, transparent 55%)",
         }} />
-        <div style={{ position: "absolute", bottom: "12px", left: "14px", fontSize: "9px", letterSpacing: "2px", textTransform: "uppercase", color: "#C4A35A", fontFamily: "'DM Mono', monospace" }}>
+        <div style={{ position: "absolute", bottom: "12px", left: "14px", fontSize: "13px", letterSpacing: "0.16em", textTransform: "uppercase", color: "#1C1A17", fontFamily: "'EB Garamond', Garamond, Georgia, serif" }}>
           {post.location}
         </div>
       </div>
 
-      <div style={{ fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", color: "#4A5A60", fontFamily: "'DM Mono', monospace", marginBottom: "8px" }}>
+      <div style={{ fontSize: "13px", letterSpacing: "0.16em", textTransform: "uppercase", color: "#9A928A", fontFamily: "'EB Garamond', Garamond, Georgia, serif", marginBottom: "8px" }}>
         {post.date}
       </div>
-      <h3 style={{ fontFamily: "-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif", fontSize: "22px", fontWeight: 700, lineHeight: 1.2, color: hovered ? "#EDE8DF" : "#C9C2B7", marginBottom: "8px", transition: "color 0.3s" }}>
+      <h3 style={{ fontFamily: "'EB Garamond', Garamond, Georgia, serif", fontSize: "22px", fontWeight: 400, lineHeight: 1.2, color: hovered ? "#1C1A17" : "#57514A", marginBottom: "8px", transition: "color 0.3s" }}>
         {post.title}
       </h3>
-      <p style={{ fontSize: "13px", color: "#7A8A8E", lineHeight: 1.7, fontWeight: 300, fontFamily: "'DM Sans', sans-serif", marginBottom: "12px" }}>
+      <p style={{ fontSize: "16px", color: "#7A736B", lineHeight: 1.7, fontWeight: 400, fontFamily: "'EB Garamond', Garamond, Georgia, serif", marginBottom: "12px" }}>
         {post.body.split("\n\n")[0]}
       </p>
-      <div style={{ fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase", color: "#C4A35A", fontFamily: "'DM Mono', monospace", display: "flex", alignItems: "center", gap: "6px" }}>
+      <div style={{ fontSize: "13px", letterSpacing: "0.16em", textTransform: "uppercase", color: "#1C1A17", fontFamily: "'EB Garamond', Garamond, Georgia, serif", display: "flex", alignItems: "center", gap: "6px" }}>
         Read <span style={{ transform: hovered ? "translateX(4px)" : "none", transition: "transform 0.3s", display: "inline-block" }}>→</span>
       </div>
     </a>
@@ -268,12 +258,12 @@ export default function BlogPage({ activePostId, onOpenPost, onBack }) {
           onClick={onBack}
           style={{
             background: "none", border: "none", cursor: "pointer",
-            fontSize: "10px", letterSpacing: "2.5px", textTransform: "uppercase",
-            color: "#7A8A8E", fontFamily: "'DM Mono', monospace",
+            fontSize: "13px", letterSpacing: "0.16em", textTransform: "uppercase",
+            color: "#7A736B", fontFamily: "'EB Garamond', Garamond, Georgia, serif",
             display: "flex", alignItems: "center", gap: "8px", padding: 0,
           }}
-          onMouseEnter={e => e.currentTarget.style.color = "#C4A35A"}
-          onMouseLeave={e => e.currentTarget.style.color = "#7A8A8E"}
+          onMouseEnter={e => e.currentTarget.style.color = "#1C1A17"}
+          onMouseLeave={e => e.currentTarget.style.color = "#7A736B"}
         >
           ← Portfolio
         </button>
@@ -282,13 +272,13 @@ export default function BlogPage({ activePostId, onOpenPost, onBack }) {
       <div style={{ padding: "40px 24px 100px" }}>
         <FadeIn>
           <div style={{ marginBottom: "48px" }}>
-            <div style={{ fontSize: "9px", letterSpacing: "4px", textTransform: "uppercase", color: "#C4A35A", fontFamily: "'DM Mono', monospace", marginBottom: "12px" }}>
+            <div style={{ fontSize: "13px", letterSpacing: "0.16em", textTransform: "uppercase", color: "#1C1A17", fontFamily: "'EB Garamond', Garamond, Georgia, serif", marginBottom: "12px" }}>
               Field Notes
             </div>
-            <h2 style={{ fontFamily: "-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif", fontSize: "clamp(32px, 8vw, 52px)", fontWeight: 700, lineHeight: 1.1, color: "#EDE8DF" }}>
+            <h2 style={{ fontFamily: "'EB Garamond', Garamond, Georgia, serif", fontSize: "clamp(32px, 8vw, 52px)", fontWeight: 400, lineHeight: 1.1, color: "#1C1A17" }}>
               From the field.
             </h2>
-            <p style={{ marginTop: "14px", fontSize: "14px", color: "#7A8A8E", fontWeight: 300, lineHeight: 1.7, maxWidth: "360px" }}>
+            <p style={{ marginTop: "14px", fontSize: "14px", color: "#7A736B", fontWeight: 400, lineHeight: 1.7, maxWidth: "360px" }}>
               Trip reports, gear notes, and frames worth keeping.
             </p>
           </div>
