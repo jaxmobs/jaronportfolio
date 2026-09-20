@@ -71,6 +71,23 @@ Two rules the layout depends on:
 `pre-lovefrom-theme` holds the previous dark navy + gold look, if it is ever
 needed back.
 
+## Deploys
+
+`vercel.json` is schema-validated by Vercel **before** the build runs, so a
+passing `npm run build` locally proves nothing about it. Unknown keys are
+rejected outright — a `"comment"` field in a headers entry has already taken
+production down once. There is no way to annotate that file; explain the rules
+here instead.
+
+The cache headers, and why they differ:
+
+- `/fonts/*` is `immutable`. The files are content-stable, and a different cut
+  of the typeface would land under a different name.
+- `/gallery/*` and `/blog/*` are deliberately **not** `immutable`, only
+  long-lived and revalidatable. `optimize-blog` rewrites images in place under
+  the same filename, so `immutable` would strand a replaced photo in visitors'
+  browsers for a year.
+
 ## Environment notes
 
 Screenshots via Playwright against `npx vite preview` work, with two caveats:
