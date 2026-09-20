@@ -11,10 +11,10 @@ export const POSTS = [
   {
     id: "april-bowl-government-peak",
     title: "April Bowl to Government Peak Traverse",
-    subtitle: "Hatcher Pass",
+    subtitle: "Fujifilm X-T3",
     date: "September 2026",
     location: "Hatcher Pass, Alaska",
-    heroImage: "/blog/april-bowl-01.jpg",
+    heroImage: "/blog/april-bowl-06.jpg",
     body: `A good friend and I had the chance to sneak in a late season jaunt from April Bowl to Government Peak. We were pleasantly surprised with front seats to the active changing of seasons as flurries dusted the ripe blueberries on the side of the mountains.
 
 Jet boils and puffy jackets were well appreciated when it came time for a coffee break, and the steep descent down Government Peak via Blueberry Knoll proved slippery as usual.`,
@@ -24,6 +24,11 @@ Jet boils and puffy jackets were well appreciated when it came time for a coffee
       "/blog/april-bowl-03.jpg",
       "/blog/april-bowl-04.jpg",
       "/blog/april-bowl-05.jpg",
+      "/blog/april-bowl-06.jpg",
+      "/blog/april-bowl-07.jpg",
+      "/blog/april-bowl-08.jpg",
+      "/blog/april-bowl-09.jpg",
+      "/blog/april-bowl-10.jpg",
     ],
     tags: ["hiking", "traverse", "alaska", "hatcher pass"],
   },
