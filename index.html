@@ -7,20 +7,22 @@
 
     <!-- Primary SEO -->
     <title>Jaron Mobley — Videographer | Palmer, Alaska</title>
-    <meta name="description" content="Freelance videographer based in Palmer, Alaska. Outdoor media, mini-documentaries, and brand storytelling shot in the wild corners of Alaska." />
-    <meta name="keywords" content="videographer Alaska, Palmer Alaska videographer, outdoor videographer, Alaska filmmaker, brand video Alaska, mini documentary Alaska, adventure videography" />
+    <meta name="description" content="Freelance videographer making mini-documentaries and brand films for small teams. Based in Palmer, Alaska." />
     <meta name="author" content="Jaron Mobley" />
+    <meta name="theme-color" content="#F4F1EB" />
     <link rel="canonical" href="https://jaronmobley.com/" />
 
-    <!-- Font preconnect to reduce render-blocking -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- The typeface is self-hosted, so it is preloaded directly rather than
+         waiting to be discovered in the stylesheet React injects at runtime.
+         Only the two faces that carry body copy — the rest can arrive late. -->
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/ebgaramond-400.woff2" crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/ebgaramond-400-italic.woff2" crossorigin />
 
     <!-- Open Graph (Facebook, LinkedIn, iMessage previews) -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://jaronmobley.com/" />
     <meta property="og:title" content="Jaron Mobley — Videographer | Palmer, Alaska" />
-    <meta property="og:description" content="Outdoor media, mini-docs, and brand storytelling from the edge of the map. Based in Palmer, Alaska." />
+    <meta property="og:description" content="Mini-documentaries and brand films, made close to the people in them. Based in Palmer, Alaska." />
     <meta property="og:image" content="https://jaronmobley.com/og-image.jpg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -30,7 +32,7 @@
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Jaron Mobley — Videographer | Palmer, Alaska" />
-    <meta name="twitter:description" content="Outdoor media, mini-docs, and brand storytelling from the edge of the map." />
+    <meta name="twitter:description" content="Mini-documentaries and brand films, made close to the people in them." />
     <meta name="twitter:image" content="https://jaronmobley.com/og-image.jpg" />
 
     <!-- Structured Data: Person -->
@@ -60,7 +62,7 @@
       "@context": "https://schema.org",
       "@type": "LocalBusiness",
       "name": "Jaron Mobley Videography",
-      "description": "Freelance videographer specializing in outdoor media, mini-documentaries, and brand storytelling in Alaska.",
+      "description": "Freelance videographer making mini-documentaries and brand films for small teams. Shoots and edits solo.",
       "url": "https://jaronmobley.com",
       "email": "jaronmobley@gmail.com",
       "address": {
@@ -84,7 +86,7 @@
     }
     </script>
   </head>
-  <body style="margin:0;background:#0A0E12;">
+  <body style="margin:0;background:#F4F1EB;">
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

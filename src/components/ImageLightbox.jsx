@@ -29,8 +29,8 @@ export default function ImageLightbox({ src, alt, caption, date, onClose }) {
         onClick={onClose}
         style={{
           position: "absolute", top: "24px", right: "24px",
-          background: "none", border: "1px solid rgba(28,26,23,0.3)",
-          color: "#1C1A17", cursor: "pointer",
+          background: "none", border: "none",
+          color: "#F4F1EB", cursor: "pointer",
           width: "40px", height: "40px", fontSize: "18px",
           display: "flex", alignItems: "center", justifyContent: "center",
         }}
@@ -55,16 +55,15 @@ export default function ImageLightbox({ src, alt, caption, date, onClose }) {
         }}>
           {caption && (
             <p style={{
-              fontSize: "15px", color: "#1C1A17", fontFamily: "'EB Garamond', Garamond, Georgia, serif",
-              lineHeight: 1.6, marginBottom: "6px",
+              fontSize: "18px", color: "#F4F1EB", lineHeight: 1.6, marginBottom: "8px",
             }}>
               {caption}
             </p>
           )}
           {date && (
             <p style={{
-              fontSize: "13px", letterSpacing: "0.16em", color: "#1C1A17",
-              fontFamily: "'EB Garamond', Garamond, Georgia, serif", textTransform: "uppercase",
+              fontSize: "13px", letterSpacing: "0.16em", color: "rgba(244,241,235,0.65)",
+              textTransform: "uppercase",
             }}>
               {date}
             </p>
@@ -74,7 +73,7 @@ export default function ImageLightbox({ src, alt, caption, date, onClose }) {
 
       <p style={{
         marginTop: "16px", fontSize: "13px", letterSpacing: "0.16em",
-        color: "#B5ADA3", fontFamily: "'EB Garamond', Garamond, Georgia, serif",
+        color: "rgba(244,241,235,0.45)",
       }}>
         Click outside or press ESC to close
       </p>

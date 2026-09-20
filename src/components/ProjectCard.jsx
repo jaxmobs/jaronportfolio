@@ -41,7 +41,11 @@ export default function ProjectCard({ project, index }) {
         <div style={{ position: "relative", overflow: "hidden", aspectRatio: "16/9", background: "#EEEAE1" }}>
           <img
             src={project.thumb}
-            alt={project.title}
+            alt={`Still from ${project.title}, a ${project.category.toLowerCase()} for ${project.client}`}
+            loading="lazy"
+            decoding="async"
+            width="1280"
+            height="720"
             style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
           />
 

@@ -15,12 +15,11 @@ export default function LatestPost({ onReadPost }) {
     <section
       ref={ref}
       style={{
-        padding: "80px 24px",
-        background: "#EEEAE1",
-        borderTop: "1px solid rgba(28,26,23,0.08)",
+        padding: "clamp(96px, 14vw, 176px) clamp(24px, 6vw, 72px)",
       }}
     >
       {/* Section label */}
+      <div style={{ maxWidth: "1180px", margin: "0 auto" }}>
       <div style={{
         opacity: inView ? 1 : 0,
         transform: inView ? "none" : "translateY(20px)",
@@ -31,7 +30,7 @@ export default function LatestPost({ onReadPost }) {
           fontSize: "13px", letterSpacing: "0.16em", textTransform: "uppercase",
           color: "#1C1A17", fontFamily: "'EB Garamond', Garamond, Georgia, serif", marginBottom: "10px",
         }}>
-          Latest from the Field
+          Latest
         </div>
         <div style={{ width: "40px", height: "1px", background: "rgba(28,26,23,0.3)" }} />
       </div>
@@ -58,7 +57,9 @@ export default function LatestPost({ onReadPost }) {
         }}>
           <img
             src={post.heroImage}
-            alt={post.title}
+            alt={`${post.title} — ${post.location}`}
+            loading="lazy"
+            decoding="async"
             style={{
               width: "100%", height: "100%", objectFit: "cover", display: "block",
               transform: hovered ? "scale(1.04)" : "scale(1)",
@@ -66,19 +67,6 @@ export default function LatestPost({ onReadPost }) {
               filter: "brightness(0.9)",
             }}
           />
-          {/* Gradient */}
-          <div style={{
-            position: "absolute", inset: 0,
-            background: "linear-gradient(to top, rgba(10,14,18,0.7) 0%, transparent 50%)",
-          }} />
-          {/* Location tag */}
-          <div style={{
-            position: "absolute", bottom: "14px", left: "16px",
-            fontSize: "13px", letterSpacing: "0.16em", textTransform: "uppercase",
-            color: "#1C1A17", fontFamily: "'EB Garamond', Garamond, Georgia, serif",
-          }}>
-            {post.location}
-          </div>
         </div>
 
         {/* Text */}
@@ -91,7 +79,7 @@ export default function LatestPost({ onReadPost }) {
             fontSize: "13px", letterSpacing: "0.16em", textTransform: "uppercase",
             color: "#9A928A", fontFamily: "'EB Garamond', Garamond, Georgia, serif", marginBottom: "10px",
           }}>
-            {post.date} — {post.subtitle}
+            {post.date} · {post.location}
           </div>
 
           <h3 style={{
@@ -106,10 +94,9 @@ export default function LatestPost({ onReadPost }) {
           </h3>
 
           <p style={{
-            fontSize: "14px", color: "#7A736B",
-            fontFamily: "'EB Garamond', Garamond, Georgia, serif",
-            lineHeight: 1.75, fontWeight: 400,
-            maxWidth: "480px", marginBottom: "20px",
+            fontSize: "clamp(17px, 1.4vw, 19px)", color: "#57514A",
+            lineHeight: 1.68, fontWeight: 400,
+            maxWidth: "34em", marginBottom: "22px",
           }}>
             {teaser}
           </p>
@@ -132,12 +119,10 @@ export default function LatestPost({ onReadPost }) {
           </div>
 
           {/* Tags */}
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginTop: "20px" }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "20px", marginTop: "24px" }}>
             {post.tags.map(t => (
               <span key={t} style={{
-                fontSize: "13px", letterSpacing: "0.16em", textTransform: "uppercase",
-                color: "#9A928A", fontFamily: "'EB Garamond', Garamond, Georgia, serif",
-                border: "1px solid rgba(28,26,23,0.3)", padding: "3px 8px",
+                fontSize: "16px", color: "#9A928A", fontStyle: "italic",
               }}>
                 {t}
               </span>
@@ -145,6 +130,7 @@ export default function LatestPost({ onReadPost }) {
           </div>
         </div>
       </a>
+      </div>
     </section>
   );
 }

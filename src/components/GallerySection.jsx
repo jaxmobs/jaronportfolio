@@ -82,13 +82,13 @@ export default function GallerySection({
                 fontSize: "13px", letterSpacing: "0.16em", textTransform: "uppercase",
                 color: "#9A928A", marginBottom: "18px",
               }}>
-                Still frames
+                Photographs
               </div>
               <h2 style={{
                 fontSize: "clamp(32px, 5vw, 60px)", fontWeight: 400,
                 lineHeight: 1.08, letterSpacing: "-0.012em", color: "#1C1A17",
               }}>
-                {asPage ? <>The full <em style={{ fontStyle: "italic" }}>gallery</em>.</> : <>From the <em style={{ fontStyle: "italic" }}>field</em>.</>}
+                {asPage ? <>Every <em style={{ fontStyle: "italic" }}>frame</em>.</> : <>Selected <em style={{ fontStyle: "italic" }}>frames</em>.</>}
               </h2>
             </div>
           </FadeIn>
