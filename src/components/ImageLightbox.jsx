@@ -29,8 +29,8 @@ export default function ImageLightbox({ src, alt, caption, date, onClose }) {
         onClick={onClose}
         style={{
           position: "absolute", top: "24px", right: "24px",
-          background: "none", border: "1px solid rgba(196,163,90,0.3)",
-          color: "#C4A35A", cursor: "pointer",
+          background: "none", border: "1px solid rgba(28,26,23,0.3)",
+          color: "#1C1A17", cursor: "pointer",
           width: "40px", height: "40px", fontSize: "18px",
           display: "flex", alignItems: "center", justifyContent: "center",
         }}
@@ -55,7 +55,7 @@ export default function ImageLightbox({ src, alt, caption, date, onClose }) {
         }}>
           {caption && (
             <p style={{
-              fontSize: "15px", color: "#EDE8DF", fontFamily: "'DM Sans', sans-serif",
+              fontSize: "15px", color: "#1C1A17", fontFamily: "'EB Garamond', Garamond, Georgia, serif",
               lineHeight: 1.6, marginBottom: "6px",
             }}>
               {caption}
@@ -63,8 +63,8 @@ export default function ImageLightbox({ src, alt, caption, date, onClose }) {
           )}
           {date && (
             <p style={{
-              fontSize: "10px", letterSpacing: "2px", color: "#C4A35A",
-              fontFamily: "'DM Mono', monospace", textTransform: "uppercase",
+              fontSize: "13px", letterSpacing: "0.16em", color: "#1C1A17",
+              fontFamily: "'EB Garamond', Garamond, Georgia, serif", textTransform: "uppercase",
             }}>
               {date}
             </p>
@@ -73,8 +73,8 @@ export default function ImageLightbox({ src, alt, caption, date, onClose }) {
       </div>
 
       <p style={{
-        marginTop: "16px", fontSize: "10px", letterSpacing: "1px",
-        color: "#3A4A50", fontFamily: "'DM Mono', monospace",
+        marginTop: "16px", fontSize: "13px", letterSpacing: "0.16em",
+        color: "#B5ADA3", fontFamily: "'EB Garamond', Garamond, Georgia, serif",
       }}>
         Click outside or press ESC to close
       </p>

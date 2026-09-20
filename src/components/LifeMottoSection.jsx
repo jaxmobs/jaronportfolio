@@ -33,8 +33,8 @@ export default function LifeMottoSection() {
       style={{
         padding: "100px 24px",
         background: "#060A0D",
-        borderTop: "1px solid rgba(196,163,90,0.08)",
-        borderBottom: "1px solid rgba(196,163,90,0.08)",
+        borderTop: "1px solid rgba(28,26,23,0.08)",
+        borderBottom: "1px solid rgba(28,26,23,0.08)",
         position: "relative",
         overflow: "hidden",
       }}
@@ -42,11 +42,11 @@ export default function LifeMottoSection() {
       {/* LIFE Magazine stamp */}
       <div style={{
         position: "absolute", top: "28px", right: "24px",
-        fontFamily: "-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif",
-        fontSize: "11px", letterSpacing: "6px",
-        color: "rgba(196,163,90,0.15)",
+        fontFamily: "'EB Garamond', Garamond, Georgia, serif",
+        fontSize: "13px", letterSpacing: "0.16em",
+        color: "rgba(28,26,23,0.15)",
         textTransform: "uppercase",
-        border: "1px solid rgba(196,163,90,0.1)",
+        border: "1px solid rgba(28,26,23,0.1)",
         padding: "5px 10px",
         opacity: inView ? 1 : 0,
         transition: "opacity 1s ease 0.2s",
@@ -57,45 +57,45 @@ export default function LifeMottoSection() {
       {/* Rule */}
       <div style={{
         width: inView ? "60px" : "0px", height: "1px",
-        background: "#C4A35A", marginBottom: "32px",
+        background: "#1C1A17", marginBottom: "32px",
         transition: "width 0.8s ease 0.1s",
       }} />
 
       <div style={{
-        fontSize: "9px", letterSpacing: "4px", color: "#C4A35A",
-        fontFamily: "'DM Mono', monospace", textTransform: "uppercase", marginBottom: "28px",
+        fontSize: "13px", letterSpacing: "0.16em", color: "#1C1A17",
+        fontFamily: "'EB Garamond', Garamond, Georgia, serif", textTransform: "uppercase", marginBottom: "28px",
         opacity: inView ? 1 : 0, transition: "opacity 0.6s ease 0.1s",
       }}>
         The Motto
       </div>
 
       <p style={{
-        fontFamily: "-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif",
+        fontFamily: "'EB Garamond', Garamond, Georgia, serif",
         fontSize: "clamp(24px, 7vw, 44px)",
-        fontWeight: 700, lineHeight: 1.35,
-        color: "#EDE8DF", maxWidth: "560px",
+        fontWeight: 400, lineHeight: 1.35,
+        color: "#1C1A17", maxWidth: "560px",
       }}>
         <WordReveal wordList={line1} baseDelay={0.2} inView={inView} />
         <br />
         <WordReveal wordList={line2} baseDelay={0.6} inView={inView} />
         <br />
-        <WordReveal wordList={line3} baseDelay={1.05} inView={inView} color="#C4A35A" />
+        <WordReveal wordList={line3} baseDelay={1.05} inView={inView} color="#1C1A17" />
         <br />
-        <span style={{ fontSize: "0.75em", fontStyle: "italic", color: "#8FA99A" }}>
-          <WordReveal wordList={line4} baseDelay={1.25} inView={inView} color="#8FA99A" />
+        <span style={{ fontSize: "0.75em", fontStyle: "italic", color: "#57514A" }}>
+          <WordReveal wordList={line4} baseDelay={1.25} inView={inView} color="#57514A" />
         </span>
       </p>
 
       <div style={{
-        marginTop: "36px", fontSize: "10px", letterSpacing: "2px",
-        color: "#4A5A60", fontFamily: "'DM Mono', monospace", textTransform: "uppercase",
+        marginTop: "36px", fontSize: "13px", letterSpacing: "0.16em",
+        color: "#9A928A", fontFamily: "'EB Garamond', Garamond, Georgia, serif", textTransform: "uppercase",
         opacity: inView ? 1 : 0, transition: "opacity 0.8s ease 2s",
         display: "flex", alignItems: "center", gap: "12px",
         flexWrap: "wrap",
       }}>
         <span>The Secret Life of Walter Mitty, 2013</span>
-        <span style={{ width: "24px", height: "1px", background: "#4A5A60", display: "inline-block" }} />
-        <span style={{ color: "#C4A35A" }}>A personal north star.</span>
+        <span style={{ width: "24px", height: "1px", background: "#9A928A", display: "inline-block" }} />
+        <span style={{ color: "#1C1A17" }}>A personal north star.</span>
       </div>
     </section>
   );

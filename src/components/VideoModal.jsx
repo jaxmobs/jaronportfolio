@@ -33,16 +33,16 @@ export default function VideoModal({ youtubeId, title, onClose }) {
         marginBottom: "16px",
       }}>
         <span style={{
-          fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase",
-          color: "#C4A35A", fontFamily: "'DM Mono', monospace",
+          fontSize: "13px", letterSpacing: "0.16em", textTransform: "uppercase",
+          color: "#1C1A17", fontFamily: "'EB Garamond', Garamond, Georgia, serif",
         }}>
           {title}
         </span>
         <button
           onClick={onClose}
           style={{
-            background: "none", border: "1px solid rgba(196,163,90,0.3)",
-            color: "#C4A35A", cursor: "pointer",
+            background: "none", border: "1px solid rgba(28,26,23,0.3)",
+            color: "#1C1A17", cursor: "pointer",
             width: "32px", height: "32px", fontSize: "16px",
             display: "flex", alignItems: "center", justifyContent: "center",
           }}
@@ -66,8 +66,8 @@ export default function VideoModal({ youtubeId, title, onClose }) {
       </div>
 
       <p style={{
-        marginTop: "12px", fontSize: "10px", letterSpacing: "1px",
-        color: "#3A4A50", fontFamily: "'DM Mono', monospace",
+        marginTop: "12px", fontSize: "13px", letterSpacing: "0.16em",
+        color: "#B5ADA3", fontFamily: "'EB Garamond', Garamond, Georgia, serif",
       }}>
         Click outside or press ESC to close
       </p>
