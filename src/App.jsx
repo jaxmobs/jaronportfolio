@@ -243,7 +243,6 @@ function Nav({ onNav, onFieldNotes }) {
 // ─── Hero ────────────────────────────────────────────────────────────────────
 function Hero() {
   const [loaded, setLoaded] = useState(false);
-  const fadeRef = useRef(null);   // outer wrapper — opacity fade on scroll
   const scaleRef = useRef(null);  // inner wrapper — parallax scale + drift
 
   useEffect(() => { const t = setTimeout(() => setLoaded(true), 100); return () => clearTimeout(t); }, []);
@@ -256,7 +255,7 @@ function Hero() {
     const update = () => {
       raf = 0;
       const progress = Math.min(window.scrollY / (window.innerHeight || 600), 1);
-      if (fadeRef.current) fadeRef.current.style.opacity = String(1 - progress * 0.7);
+      // No opacity fade — the band keeps its full density right up to the cut.
       if (scaleRef.current) {
         scaleRef.current.style.transform = `scale(${1.08 + progress * 0.15}) translateY(${window.scrollY * 0.125}px)`;
       }
@@ -277,7 +276,7 @@ function Hero() {
     <section style={{ paddingTop: "clamp(62px, 7vw, 92px)" }}>
       {/* The footage runs as a clean band, starting below the masthead so the
           navigation always sits on paper and never fights the grade. */}
-      <div ref={fadeRef} style={{
+      <div style={{
         position: "relative", height: "min(58svh, 620px)", overflow: "hidden",
         background: "#EEEAE1",
       }}>
@@ -305,12 +304,6 @@ function Hero() {
         </div>
         <img className="hero-image" src="/og-image.jpg" alt="" aria-hidden="true" />
 
-        {/* Just enough paper at top and bottom to seat the nav and dissolve
-            the lower edge into the page. */}
-        <div style={{
-          position: "absolute", inset: 0, pointerEvents: "none",
-          background: "linear-gradient(to bottom, rgba(244,241,235,0) 78%, #F4F1EB 100%)",
-        }} />
       </div>
 
       {/* The line lands on paper, where it can be set properly. */}
