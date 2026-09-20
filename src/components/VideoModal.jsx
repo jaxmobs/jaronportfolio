@@ -34,7 +34,7 @@ export default function VideoModal({ youtubeId, title, onClose }) {
       }}>
         <span style={{
           fontSize: "13px", letterSpacing: "0.16em", textTransform: "uppercase",
-          color: "#1C1A17", fontFamily: "'EB Garamond', Garamond, Georgia, serif",
+          color: "#F4F1EB",
         }}>
           {title}
         </span>
@@ -42,7 +42,7 @@ export default function VideoModal({ youtubeId, title, onClose }) {
           onClick={onClose}
           style={{
             background: "none", border: "1px solid rgba(28,26,23,0.3)",
-            color: "#1C1A17", cursor: "pointer",
+            color: "#F4F1EB", cursor: "pointer",
             width: "32px", height: "32px", fontSize: "16px",
             display: "flex", alignItems: "center", justifyContent: "center",
           }}
@@ -67,7 +67,7 @@ export default function VideoModal({ youtubeId, title, onClose }) {
 
       <p style={{
         marginTop: "12px", fontSize: "13px", letterSpacing: "0.16em",
-        color: "#B5ADA3", fontFamily: "'EB Garamond', Garamond, Georgia, serif",
+        color: "rgba(244,241,235,0.45)",
       }}>
         Click outside or press ESC to close
       </p>

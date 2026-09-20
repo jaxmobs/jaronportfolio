@@ -40,7 +40,9 @@ function PostView({ post, onBack }) {
       <div style={{ margin: "28px 0 0", overflow: "hidden", aspectRatio: "3/2", background: "#EEEAE1" }}>
         <img
           src={post.heroImage}
-          alt={post.title}
+          alt={`${post.title} — ${post.location}`}
+          fetchPriority="high"
+          decoding="async"
           style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
         />
       </div>
@@ -214,17 +216,10 @@ function PostCard({ post, onRead, index }) {
             transition: "transform 0.6s ease",
           }}
         />
-        <div style={{
-          position: "absolute", inset: 0,
-          background: "linear-gradient(to top, rgba(10,14,18,0.7) 0%, transparent 55%)",
-        }} />
-        <div style={{ position: "absolute", bottom: "12px", left: "14px", fontSize: "13px", letterSpacing: "0.16em", textTransform: "uppercase", color: "#1C1A17", fontFamily: "'EB Garamond', Garamond, Georgia, serif" }}>
-          {post.location}
-        </div>
       </div>
 
       <div style={{ fontSize: "13px", letterSpacing: "0.16em", textTransform: "uppercase", color: "#9A928A", fontFamily: "'EB Garamond', Garamond, Georgia, serif", marginBottom: "8px" }}>
-        {post.date}
+        {post.date} · {post.location}
       </div>
       <h3 style={{ fontFamily: "'EB Garamond', Garamond, Georgia, serif", fontSize: "22px", fontWeight: 400, lineHeight: 1.2, color: hovered ? "#1C1A17" : "#57514A", marginBottom: "8px", transition: "color 0.3s" }}>
         {post.title}

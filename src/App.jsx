@@ -33,7 +33,7 @@ function readRouteFromPath() {
 
 const DEFAULT_META = {
   title: "Jaron Mobley — Videographer | Palmer, Alaska",
-  description: "Outdoor media, mini-docs, and brand storytelling from the edge of the map. Based in Palmer, Alaska.",
+  description: "Mini-documentaries and brand films, made close to the people in them. Based in Palmer, Alaska.",
   image: `${SITE_URL}/og-image.jpg`,
   url: `${SITE_URL}/`,
 };
@@ -65,7 +65,7 @@ function metaForPost(post) {
   const body = (post.body || "").trim().replace(/\s+/g, " ");
   const description = body
     ? (body.length > 200 ? body.slice(0, 197).trimEnd() + "…" : body)
-    : `${post.title} — field notes and photos from ${post.location}.`;
+    : `${post.title} — notes and photographs from ${post.location}.`;
   return {
     title: `${post.title} — Jaron Mobley`,
     description,
@@ -302,7 +302,8 @@ function Hero() {
             }}
           />
         </div>
-        <img className="hero-image" src="/og-image.jpg" alt="" aria-hidden="true" />
+        <img className="hero-image" src="/og-image.jpg" alt="" aria-hidden="true"
+             fetchPriority="high" decoding="async" />
 
       </div>
 
@@ -324,8 +325,7 @@ function Hero() {
           color: "#57514A", lineHeight: 1.62, maxWidth: "30em",
           ...show(0.4),
         }}>
-          Outdoor media, mini-documentaries and brand storytelling, shot in the
-          wild corners of Alaska.
+          Mini-documentaries and brand films, made close to the people in them.
         </p>
       </div>
     </section>
@@ -388,9 +388,7 @@ function StatsBar() {
             draw closer, to find each other and to feel. That is the purpose of life.”
           </blockquote>
           <figcaption style={{ marginTop: "28px", fontSize: "15px", color: "#9A928A", lineHeight: 1.7 }}>
-            The Secret Life of Walter Mitty
-            <br />
-            <span style={{ fontStyle: "italic" }}>Palmer, Alaska</span>
+            <span style={{ fontStyle: "italic" }}>The Secret Life of Walter Mitty</span>
           </figcaption>
         </figure>
       </FadeIn>
@@ -453,13 +451,13 @@ function AboutSection() {
         <FadeIn delay={0.12}>
           <div>
             <p style={{ fontSize: "clamp(17px, 1.4vw, 20px)", color: "#57514A", lineHeight: 1.68, marginBottom: "1.2em" }}>
-              Freelance videographer based in Palmer, Alaska. I make outdoor media,
-              mini-documentaries and brand films for companies and organizations
-              operating at the edge of the last frontier.
+              Freelance videographer based in Palmer, Alaska. I make mini-documentaries
+              and brand films — mostly for small teams who want the work to look
+              like what it actually felt like to be there.
             </p>
             <p style={{ fontSize: "clamp(17px, 1.4vw, 20px)", color: "#57514A", lineHeight: 1.68, marginBottom: "2.2em" }}>
-              Years of shooting in extreme conditions, from −40°F winters to peak
-              summer alpine. Available nights and weekends.
+              I shoot and cut everything myself, which means the person you plan the
+              day with is the person holding the camera. Available nights and weekends.
             </p>
 
             {/* Capabilities as a plain running list — no bullets, no chips. */}
@@ -531,8 +529,8 @@ function ContactSection() {
           Let's make <em style={{ fontStyle: "italic" }}>something</em>.
         </SectionHead>
         <p style={{ fontSize: "clamp(17px, 1.4vw, 20px)", color: "#57514A", lineHeight: 1.68, maxWidth: "28em", marginBottom: "clamp(40px, 5vw, 64px)" }}>
-          Booking outdoor, documentary and brand projects across Alaska.
-          Reach out to start a conversation.
+          Booking documentary and brand work. Tell me what you are making and
+          who it is for, and we will figure out the rest.
         </p>
       </FadeIn>
 

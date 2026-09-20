@@ -37,7 +37,65 @@ function getDescription(post) {
   if (body) {
     return body.length > 200 ? body.slice(0, 197).trimEnd() + "…" : body;
   }
-  return `${post.title} — field notes and photos from ${post.location}.`;
+  return `${post.title} — notes and photographs from ${post.location}.`;
+}
+
+// "September 2026" -> "2026-09-01". Posts only carry month precision, so the
+// first of the month is the honest answer; an unparseable value is left out
+// rather than guessed at.
+function isoDate(label) {
+  const d = new Date(`1 ${label}`);
+  return Number.isNaN(d.getTime()) ? null : d.toISOString().slice(0, 10);
+}
+
+// Google ignores a stale sitemap far less gracefully than a missing one, and a
+// hand-maintained file drifts the moment a post is added — so it is emitted
+// from POSTS on every build.
+async function writeSitemap() {
+  const today = new Date().toISOString().slice(0, 10);
+  const entries = [
+    { loc: `${SITE_URL}/`, changefreq: "monthly", priority: "1.0", lastmod: today },
+    { loc: `${SITE_URL}/gallery`, changefreq: "monthly", priority: "0.7", lastmod: today },
+    { loc: `${SITE_URL}/blog`, changefreq: "weekly", priority: "0.8", lastmod: today },
+    ...POSTS.map((p) => ({
+      loc: `${SITE_URL}/blog/${p.id}`,
+      changefreq: "yearly",
+      priority: "0.6",
+      lastmod: isoDate(p.date) || today,
+    })),
+  ];
+
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${entries.map((e) => `  <url>
+    <loc>${e.loc}</loc>
+    <lastmod>${e.lastmod}</lastmod>
+    <changefreq>${e.changefreq}</changefreq>
+    <priority>${e.priority}</priority>
+  </url>`).join("\n")}
+</urlset>
+`;
+  await writeFile(join(DIST_DIR, "sitemap.xml"), xml);
+  console.log(`\nWrote dist/sitemap.xml (${entries.length} URLs)`);
+}
+
+// Article structured data, so a post can surface as its own result rather than
+// inheriting the homepage's Person/LocalBusiness markup.
+function blogPostingLd(post, image) {
+  const published = isoDate(post.date);
+  return JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    description: getDescription(post),
+    image,
+    ...(published ? { datePublished: published } : {}),
+    author: { "@type": "Person", name: "Jaron Mobley", url: SITE_URL },
+    publisher: { "@type": "Person", name: "Jaron Mobley", url: SITE_URL },
+    mainEntityOfPage: { "@type": "WebPage", "@id": `${SITE_URL}/blog/${post.id}` },
+    ...(post.location ? { contentLocation: { "@type": "Place", name: post.location } } : {}),
+    ...(post.tags?.length ? { keywords: post.tags.join(", ") } : {}),
+  }, null, 2);
 }
 
 function setMetaContent(html, matchAttr, matchValue, content) {
@@ -80,6 +138,11 @@ function renderPostHtml(template, post, { width, height }) {
   html = setMetaContent(html, "name", "twitter:description", description);
   html = setMetaContent(html, "name", "twitter:image", image);
 
+  html = html.replace(
+    "</head>",
+    `  <script type="application/ld+json">\n${blogPostingLd(post, image)}\n    </script>\n  </head>`
+  );
+
   return html;
 }
 
@@ -98,6 +161,8 @@ async function run() {
     await writeFile(outPath, html);
     console.log(`  /blog/${post.id} -> dist/blog/${post.id}.html (image ${dims.width}x${dims.height})`);
   }
+
+  await writeSitemap();
   console.log("Done.");
 }
 
