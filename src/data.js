@@ -113,7 +113,7 @@ export const GALLERY = [
   { id: 23, src: "/gallery/902A69E9-53A5-4584-B3D3-999BF63D1FFA_1_102_o.jpg", alt: "Broken cloud over a channel with low mountains on the far shore", caption: "", date: "" },
   { id: 24, src: "/gallery/909CF4C6-E0C0-4BE1-8101-FB4869B3C492_1_102_o.jpg", alt: "A work jacket draped over a wooden deck railing", caption: "", date: "" },
   { id: 25, src: "/gallery/ABE5C455-5B8A-4967-AF1C-0337F11BB00D_1_105_c.jpg", alt: "A green camera pack tagged fragile, propped against a terminal window", caption: "", date: "" },
-  { id: 26, src: "/gallery/AEA377F8-F5EA-490C-9C38-D2D138B184FE_1_102_a.jpg", alt: "Salmon strips drying on a rail above carved cedar and painted formline panels", caption: "", date: "" },
+  { id: 26, src: "/gallery/AEA377F8-F5EA-490C-9C38-D2D138B184FE_1_102_a.jpg", alt: "Cedar strips drying on a rail above a carved log and painted formline panels", caption: "", date: "" },
   { id: 27, src: "/gallery/B4E03B11-3B00-4E69-A857-6A6F73653E3E_1_102_a.jpg", alt: "A passenger in a down jacket at the rail of a ferry cabin, fog outside the glass", caption: "", date: "" },
   { id: 28, src: "/gallery/C8B7D7A5-97B3-40BA-B128-8345AEE82601_1_102_a.jpg", alt: "Snow-covered peaks across a channel with two small boats near the shore", caption: "", date: "" },
   { id: 29, src: "/gallery/CB215ED8-09E8-4C71-9F33-D318F186B64F_1_201_a.jpg", alt: "A yellow bush plane on tundra tires lifting off a sand bar", caption: "", date: "" },
