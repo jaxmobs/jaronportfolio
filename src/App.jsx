@@ -446,7 +446,7 @@ function AboutSection() {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 330px), 1fr))", gap: "clamp(40px, 6vw, 96px)" }}>
         <FadeIn>
           <SectionHead eyebrow="About" style={{ marginBottom: 0 }}>
-            Built for the <em style={{ fontStyle: "italic" }}>field</em>.
+            The way I <em style={{ fontStyle: "italic" }}>shoot</em>.
           </SectionHead>
         </FadeIn>
 

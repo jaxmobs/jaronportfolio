@@ -31,7 +31,7 @@ export default function LatestPost({ onReadPost }) {
           fontSize: "13px", letterSpacing: "0.16em", textTransform: "uppercase",
           color: "#1C1A17", fontFamily: "'EB Garamond', Garamond, Georgia, serif", marginBottom: "10px",
         }}>
-          Latest from the Field
+          Latest
         </div>
         <div style={{ width: "40px", height: "1px", background: "rgba(28,26,23,0.3)" }} />
       </div>

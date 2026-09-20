@@ -276,7 +276,7 @@ export default function BlogPage({ activePostId, onOpenPost, onBack }) {
               Field Notes
             </div>
             <h2 style={{ fontFamily: "'EB Garamond', Garamond, Georgia, serif", fontSize: "clamp(32px, 8vw, 52px)", fontWeight: 400, lineHeight: 1.1, color: "#1C1A17" }}>
-              From the field.
+              Between shoots.
             </h2>
             <p style={{ marginTop: "14px", fontSize: "14px", color: "#7A736B", fontWeight: 400, lineHeight: 1.7, maxWidth: "360px" }}>
               Trip reports, gear notes, and frames worth keeping.
