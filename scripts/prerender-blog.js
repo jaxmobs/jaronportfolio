@@ -146,6 +146,63 @@ function renderPostHtml(template, post, { width, height }) {
   return html;
 }
 
+// /gallery and /blog are client-side routes. Without their own HTML they fall
+// through the catch-all rewrite to index.html, which carries the homepage's
+// canonical — so each one told crawlers "I am really the homepage" while the
+// sitemap asked for them to be indexed. Give them real documents instead.
+const STATIC_ROUTES = [
+  {
+    path: "gallery",
+    title: "Gallery — Jaron Mobley",
+    description:
+      "Photographs from shoots and the trips around them: bush planes, boats, bikes and the people met along the way.",
+    ld: {
+      "@context": "https://schema.org",
+      "@type": "ImageGallery",
+      name: "Gallery — Jaron Mobley",
+      url: `${SITE_URL}/gallery`,
+      author: { "@type": "Person", name: "Jaron Mobley", url: SITE_URL },
+    },
+  },
+  {
+    path: "blog",
+    title: "Field Notes — Jaron Mobley",
+    description:
+      "Write-ups from between shoots — what the day was like, who was there and what came back on the card.",
+    ld: {
+      "@context": "https://schema.org",
+      "@type": "Blog",
+      name: "Field Notes",
+      url: `${SITE_URL}/blog`,
+      author: { "@type": "Person", name: "Jaron Mobley", url: SITE_URL },
+      blogPost: POSTS.map((p) => ({
+        "@type": "BlogPosting",
+        headline: p.title,
+        url: `${SITE_URL}/blog/${p.id}`,
+        ...(isoDate(p.date) ? { datePublished: isoDate(p.date) } : {}),
+      })),
+    },
+  },
+];
+
+function renderRouteHtml(template, route) {
+  const url = `${SITE_URL}/${route.path}`;
+  let html = template;
+  html = html.replace(/<title>.*?<\/title>/s, `<title>${escapeHtml(route.title)}</title>`);
+  html = html.replace(/(<link rel="canonical" href=")[^"]*("\s*\/?>)/, `$1${escapeHtml(url)}$2`);
+  html = setMetaContent(html, "name", "description", route.description);
+  html = setMetaContent(html, "property", "og:url", url);
+  html = setMetaContent(html, "property", "og:title", route.title);
+  html = setMetaContent(html, "property", "og:description", route.description);
+  html = setMetaContent(html, "name", "twitter:title", route.title);
+  html = setMetaContent(html, "name", "twitter:description", route.description);
+  html = html.replace(
+    "</head>",
+    `  <script type="application/ld+json">\n${JSON.stringify(route.ld, null, 2)}\n    </script>\n  </head>`
+  );
+  return html;
+}
+
 async function run() {
   const templatePath = join(DIST_DIR, "index.html");
   const template = await readFile(templatePath, "utf-8");
@@ -160,6 +217,12 @@ async function run() {
     const outPath = join(blogDir, `${post.id}.html`);
     await writeFile(outPath, html);
     console.log(`  /blog/${post.id} -> dist/blog/${post.id}.html (image ${dims.width}x${dims.height})`);
+  }
+
+  console.log(`\nPre-rendering ${STATIC_ROUTES.length} static route(s)...`);
+  for (const route of STATIC_ROUTES) {
+    await writeFile(join(DIST_DIR, `${route.path}.html`), renderRouteHtml(template, route));
+    console.log(`  /${route.path} -> dist/${route.path}.html`);
   }
 
   await writeSitemap();
