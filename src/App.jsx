@@ -5,6 +5,7 @@ import ProjectCard from "./components/ProjectCard.jsx";
 import GallerySection from "./components/GallerySection.jsx";
 import BlogPage from "./components/BlogPage.jsx";
 import LatestPost from "./components/LatestPost.jsx";
+import OneSheet from "./components/OneSheet.jsx";
 import { POSTS } from "./blog.js";
 import GALLERY_COLORS from "./gallery-colors.json";
 import { FONT_FACES } from "./fonts.css.js";
@@ -25,6 +26,7 @@ const SITE_URL = "https://jaronmobley.com";
 function readRouteFromPath() {
   const path = window.location.pathname.replace(/\/+$/, "") || "/";
   if (path === "/gallery") return { view: "gallery" };
+  if (path === "/one-sheet") return { view: "onesheet" };
   const match = path.match(/^\/blog\/([^/]+)$/);
   if (match) return { view: "blog", postId: match[1] };
   if (path === "/blog") return { view: "blog", postId: null };
@@ -586,6 +588,7 @@ export default function App() {
   const [blogPostId, setBlogPostId] = useState(initialRoute.view === "blog" ? initialRoute.postId : null);
   const [showBlog, setShowBlog] = useState(initialRoute.view === "blog");
   const [showGallery, setShowGallery] = useState(initialRoute.view === "gallery");
+  const isOneSheet = initialRoute.view === "onesheet";
 
   const openBlog = (postId = null, { replace = false } = {}) => {
     setShowGallery(false);
@@ -644,6 +647,17 @@ export default function App() {
       applyMeta(DEFAULT_META);
     }
   }, [showBlog, showGallery, blogPostId]);
+
+  // The one-sheet is deliberately a dead end — no nav, and it never hands the
+  // reader off anywhere except the contact links at the bottom.
+  if (isOneSheet) {
+    return (
+      <div style={{ background: "#F4F1EB", minHeight: "100vh", fontFamily: "'EB Garamond', Garamond, Georgia, serif", color: "#1C1A17", overflowX: "hidden" }}>
+        <GlobalStyles />
+        <OneSheet />
+      </div>
+    );
+  }
 
   if (showBlog) {
     return (
