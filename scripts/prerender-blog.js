@@ -183,11 +183,32 @@ const STATIC_ROUTES = [
       })),
     },
   },
+  {
+    // A pitch link, sent deliberately. Kept out of the sitemap and marked
+    // noindex so it never competes with the homepage in search — the films
+    // and photographs on it are all duplicated from there.
+    path: "one-sheet",
+    noindex: true,
+    title: "Jaron Mobley — Selected Work",
+    description:
+      "Three films, a handful of stills, and how to get in touch. Mini-documentaries and brand films by Jaron Mobley.",
+  },
 ];
 
 function renderRouteHtml(template, route) {
   const url = `${SITE_URL}/${route.path}`;
   let html = template;
+
+  // A noindex route is still crawlable on purpose. Blocking it in robots.txt
+  // instead would stop crawlers fetching the page at all, which means they
+  // never see this tag — and a URL that gets linked can then be indexed with
+  // no content behind it. Let them in, and tell them not to list it.
+  if (route.noindex) {
+    html = html.replace(
+      "</head>",
+      '  <meta name="robots" content="noindex, nofollow" />\n  </head>'
+    );
+  }
   html = html.replace(/<title>.*?<\/title>/s, `<title>${escapeHtml(route.title)}</title>`);
   html = html.replace(/(<link rel="canonical" href=")[^"]*("\s*\/?>)/, `$1${escapeHtml(url)}$2`);
   html = setMetaContent(html, "name", "description", route.description);
@@ -196,10 +217,12 @@ function renderRouteHtml(template, route) {
   html = setMetaContent(html, "property", "og:description", route.description);
   html = setMetaContent(html, "name", "twitter:title", route.title);
   html = setMetaContent(html, "name", "twitter:description", route.description);
-  html = html.replace(
-    "</head>",
-    `  <script type="application/ld+json">\n${JSON.stringify(route.ld, null, 2)}\n    </script>\n  </head>`
-  );
+  if (route.ld) {
+    html = html.replace(
+      "</head>",
+      `  <script type="application/ld+json">\n${JSON.stringify(route.ld, null, 2)}\n    </script>\n  </head>`
+    );
+  }
   return html;
 }
 

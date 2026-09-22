@@ -1,6 +1,7 @@
 {
   "rewrites": [
     { "source": "/gallery", "destination": "/gallery.html" },
+    { "source": "/one-sheet", "destination": "/one-sheet.html" },
     { "source": "/blog", "destination": "/blog.html" },
     { "source": "/blog/:id", "destination": "/blog/:id.html" },
     { "source": "/(.*)", "destination": "/" }

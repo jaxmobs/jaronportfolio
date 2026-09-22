@@ -72,11 +72,10 @@ export const FILTERS = ["all", "mini-doc", "brand", "gear", "editorial"];
 
 // ─────────────────────────────────────────────
 //  GALLERY
-//  Add images to public/gallery/ and reference as /gallery/filename.jpg
-//  Edit caption and date for each — they show in the lightbox on click.
-//  Run: node scripts/optimize-gallery.js — to optimize new photos before adding.
-// ─────────────────────────────────────────────
-//  GALLERY
+//  Images live in public/gallery/, referenced as
+//  /gallery/filename.jpg. Run optimize-gallery on
+//  new photos before adding them here.
+//
 //  alt describes what is actually in the frame —
 //  the work, the gear, the people — rather than
 //  restating the location. Every string is
@@ -131,3 +130,19 @@ export const GALLERY = [
   { id: 41, src: "/gallery/IMG_5185.jpg", alt: "Portrait of a photographer in an orange down parka and balaclava above the clouds", caption: "", date: "" },
   { id: 42, src: "/gallery/IMG_5189.jpg", alt: "A cloud layer sitting below a summit at sunset", caption: "", date: "" },
 ];
+
+// ─────────────────────────────────────────────
+//  ONE-SHEET
+//  The curated pitch page at /one-sheet. Its
+//  whole value is being short, so keep it to
+//  three films and a handful of stills.
+//
+//  films  — PROJECTS ids, in display order
+//  photos — GALLERY ids, in display order
+// ─────────────────────────────────────────────
+export const ONE_SHEET = {
+  films: [1, 2, 5],
+  photos: [9, 41, 29, 15, 37, 6, 14, 35],
+  intro:
+    "I make mini-documentaries and brand films for small teams, and I shoot and cut every one of them myself — so the person you plan the day with is the person holding the camera.",
+};
